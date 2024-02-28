@@ -60,4 +60,6 @@ model Permission {
   action  String
   subject String
   users   User[] @relation("UserPermissions")
+
+  @@unique([action, subject])
 }
