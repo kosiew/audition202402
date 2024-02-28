@@ -23,10 +23,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const timestamp = Date.now();
     const products = Array.from({ length: numberOfProducts }).map((_, index) => ({
       name: `Product ${timestamp} ${index + 1}`,
-      price: Math.random() * 100, // Random price
-      quantity: Math.floor(Math.random() * 100), // Random quantity
-      supplierId
+      price: parseFloat((Math.random() * 100).toFixed(2)), // Random price with 2 decimal places      quantity: Math.floor(Math.random() * 100), // Random quantity
+      supplierId,
+      quantity: Math.floor(Math.random() * 100) + 1, // Random quantity between 1 and 100    
     }));
+
 
     // Bulk insert products
     try {
