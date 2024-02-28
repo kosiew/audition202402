@@ -2,10 +2,14 @@
 
 const { PrismaClient } = require("@prisma/client");
 const bcrypt = require("bcryptjs");
+const { connect } = require("http2");
 const prisma = new PrismaClient();
 
 async function main() {
-  // Add Roles
+  await prisma.product.deleteMany({});
+  await prisma.supplier.deleteMany({});
+  await prisma.user.deleteMany({});
+  await prisma.permission.deleteMany({});
   const permissionsData = [
     { action: "create", subject: "Product" },
     { action: "view", subject: "Product" },
@@ -13,52 +17,34 @@ async function main() {
     { action: "delete", subject: "Product" }
   ];
 
-  // Create permissions
-  for (const permission of permissionsData) {
-    await prisma.permission.create({
-      data: permission
-    });
-  }
+  // create permissions
+  await prisma.permission.createMany({
+    data: permissionsData
+  });
 
-  // Define roles
-  const roleData = [
-    {
-      name: "Admin",
-      permissions: {
-        connect: permissionsData.map((permission) => ({
-          action: permission.action,
-          subject: permission.subject
-        }))
-      }
-    },
-    {
-      name: "User",
-      permissions: {
-        connect: permissionsData
-          .filter((permission) => permission.action === "view")
-          .map((permission) => ({
-            action: permission.action,
-            subject: permission.subject
-          }))
-      }
+  const createdPermissions = await prisma.permission.findMany({
+    where: {
+      OR: permissionsData.map(({ action, subject }) => ({
+        action,
+        subject
+      }))
     }
-    // More roles can be added here
-  ];
+  });
 
-  // Create roles and link them to permissions
-  for (const role of roleData) {
-    await prisma.role.create({
-      data: role
-    });
-  }
   // Add Users
+  const emailVerified = new Date();
+
   const hashedPasswordAdmin = await bcrypt.hash("admin123", 10);
   const adminUser = await prisma.user.create({
     data: {
+      name: "Admin",
       email: "admin@example.com",
+      emailVerified,
       password: hashedPasswordAdmin,
-      roles: {
-        connect: [{ name: "Admin" }] // Connect Admin role
+      permissions: {
+        connect: createdPermissions.map(({ id }) => ({
+          id
+        }))
       }
     }
   });
@@ -66,10 +52,16 @@ async function main() {
   const hashedPasswordUser = await bcrypt.hash("user123", 10);
   const normalUser = await prisma.user.create({
     data: {
-      email: "user@example.com",
+      name: "User 1",
+      email: "user1@example.com",
       password: hashedPasswordUser,
-      roles: {
-        connect: [{ name: "User" }] // Connect User role
+      emailVerified,
+      permissions: {
+        connect: createdPermissions
+          .filter((permission) => permission.action === "view")
+          .map(({ id }) => ({
+            id
+          }))
       }
     }
   });
