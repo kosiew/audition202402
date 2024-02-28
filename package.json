@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@prisma/client": "^5.10.2",
+    "@types/formidable": "^3.4.5",
     "bcryptjs": "^2.4.3",
     "bun": "^1.0.29",
     "cloudinary": "^2.0.1",
