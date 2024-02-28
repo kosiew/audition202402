@@ -3,12 +3,22 @@ import { PrismaClient } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import formidable from 'formidable';
 import { v2 as cloudinary } from 'cloudinary';
+import { Fields, Files, File, IncomingForm } from 'formidable';
 
 const prisma = new PrismaClient();
 
 const cloudinaryConfig = process.env.CLOUDINARY_CONFIG;
-cloudinary.config(cloudinaryConfig);
+if (!cloudinaryConfig) {
+  throw new Error('CLOUDINARY_CONFIG is not defined in .env');
+}
 
+try {
+  const configOptions = JSON.parse(cloudinaryConfig);
+  cloudinary.config(configOptions);
+} catch (error) {
+  console.error('Failed to parse CLOUDINARY_CONFIG:', error);
+  throw new Error('Failed to parse CLOUDINARY_CONFIG');
+}
 // Disable Next.js body parsing
 export const config = {
   api: {
@@ -18,23 +28,31 @@ export const config = {
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
-    const form = new formidable.IncomingForm();
-    form.parse(req, async (err, fields, files) => {
+    const form = new IncomingForm();
+    form.parse(req, async (err: Error, fields: Fields, files: Files) => {
       if (err) {
         return res.status(500).json({ message: 'Form parsing error' });
       }
+      const name = fields.name?.[0]
+      const price = fields.price?.[0];
+      const quantity = fields.quantity?.[0];
+      const supplierName = fields.supplierName?.[0];
 
       let imageUrl = ''; // Initialize image URL as null
 
-      // Check if there is an image file and it has a valid path
-      if (files.image && files.image.filepath) {
-        // Upload the image to Cloudinary
-        const result = await cloudinary.uploader.upload(files.image.filepath);
-        imageUrl = result.url; // Set the Cloudinary image URL
+      if (files) {
+        const file = files.file?.[0]
+        if (file) {
+          // Check if there is an image file and it has a valid path
+          if (file.filepath) {
+            // Upload the image to Cloudinary
+            const result = await cloudinary.uploader.upload(file.filepath);
+            imageUrl = result.url; // Set the Cloudinary image URL
+          }
+        }
       }
 
       // Extract other form fields
-      const { name, price, quantity, supplierName } = fields; // Adjust according to your form fields
       if (!name || !price || !quantity || !supplierName) {
         return res.status(400).json({ message: 'Missing required fields' });
       }
