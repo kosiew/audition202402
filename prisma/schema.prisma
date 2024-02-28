@@ -18,13 +18,14 @@ model Product {
   name       String
   price      Float
   quantity   Int
+  imageUrl   String   @default("")
   supplier   Supplier @relation(fields: [supplierId], references: [id])
   supplierId Int
 }
 
 model Supplier {
   id       Int       @id @default(autoincrement())
-  name     String
+  name     String    @unique
   products Product[]
 }
 
