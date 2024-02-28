@@ -10,7 +10,7 @@ type QueryParams = {
   sortBy?: string;
   sortOrder?: 'asc' | 'desc';
   // in-stock ie quantity > 0
-  inStock?: boolean;
+  inStock?: String;
 };
 
 type ProductResponse = {
@@ -38,13 +38,13 @@ export default async function handler(
     where: {},
   };
 
-  if (inStock) {
-    queryOptions.where = {
-      quantity: {
-        gt: 0,
-      },
-    };
-  }
+  const inStockBool = inStock === 'true';
+
+  queryOptions.where = {
+    quantity: {
+      [inStockBool ? 'gt' : 'equals']: 0,
+    },
+  };
 
   try {
     const products = await prisma.product.findMany(queryOptions);
