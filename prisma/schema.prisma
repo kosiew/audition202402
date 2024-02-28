@@ -29,13 +29,13 @@ model Supplier {
 }
 
 model User {
-  id            Int       @id @default(autoincrement())
+  id            Int          @id @default(autoincrement())
   name          String?
-  email         String    @unique
+  email         String       @unique
   emailVerified DateTime?
   password      String
   sessions      Session[]
-  roles         Role[]
+  permissions   Permission[]
 }
 
 model Session {
@@ -55,17 +55,10 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-model Role {
-  id          Int          @id @default(autoincrement())
-  name        String       @unique
-  permissions Permission[] // No need for `@relation` here as it's implied
-  users       User[] // No need for `@relation` here as it's implied
-}
-
 model Permission {
   id      Int    @id @default(autoincrement())
   action  String
   subject String
-  roleId  Int
-  role    Role   @relation(fields: [roleId], references: [id])
+  User    User?  @relation(fields: [userId], references: [id])
+  userId  Int?
 }
