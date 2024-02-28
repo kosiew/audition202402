@@ -21,6 +21,8 @@ model Product {
   imageUrl   String   @default("")
   supplier   Supplier @relation(fields: [supplierId], references: [id])
   supplierId Int
+
+  @@unique([name, supplierId])
 }
 
 model Supplier {
