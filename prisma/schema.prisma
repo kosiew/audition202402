@@ -34,8 +34,8 @@ model User {
   email         String    @unique
   emailVerified DateTime?
   password      String
-  image         String?
   sessions      Session[]
+  roles         Role[]
 }
 
 model Session {
@@ -53,4 +53,19 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Role {
+  id          Int          @id @default(autoincrement())
+  name        String       @unique
+  permissions Permission[] // No need for `@relation` here as it's implied
+  users       User[] // No need for `@relation` here as it's implied
+}
+
+model Permission {
+  id      Int    @id @default(autoincrement())
+  action  String
+  subject String
+  roleId  Int
+  role    Role   @relation(fields: [roleId], references: [id])
 }
