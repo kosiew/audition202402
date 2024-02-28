@@ -11,6 +11,9 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.0",
+    "@mui/material": "^5.15.11",
     "@prisma/client": "^5.10.2",
     "@types/formidable": "^3.4.5",
     "bcryptjs": "^2.4.3",
