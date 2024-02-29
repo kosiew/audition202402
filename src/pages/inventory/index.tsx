@@ -1,7 +1,7 @@
 import AddProductForm from '@/components/AddProductForm';
 import PaginationControl from '@/components/PaginationControl';
 import ProductTable from '@/components/ProductTable';
-import SortFilterControls, { SortOrder } from '@/components/SortFilterControls';
+import SortFilterControls, { SortBy, SortOrder } from '@/components/SortFilterControls';
 import { Product } from '@/types/product';
 import { useCallback, useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
@@ -11,15 +11,14 @@ const InventoryPage = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1); // Add state for total pages
-  const [name, setName] = useState('');
-  const [price, setPrice] = useState('');
-  const [supplierName, setSupplierName] = useState('');
   const [limit, setLimit] = useState('10');
-  const [quantity, setQuantity] = useState('');
-  const [sortBy, setSortBy] = useState('name');
+  const [sortBy, setSortBy] = useState<SortBy>('name');
   const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
   const [inStock, setInStock] = useState(true);
+  const [trigger, setTrigger] = useState(0);
 
+  // To trigger a state change, increment the counter
+  const updateProducts = () => setTrigger((trigger) => trigger + 1);
   // Handle file drop
   const onDrop = useCallback((acceptedFiles: File[]) => {
     // Assuming you want to use only the first file
@@ -47,52 +46,7 @@ const InventoryPage = () => {
     };
 
     fetchProducts();
-  }, [page, limit, sortBy, sortOrder, inStock]); // Ensure effect runs when these values change
-
-  const handleAddProduct = async () => {
-    // Create a FormData instance to build the form data payload
-    const formData = new FormData();
-
-    // Append the product fields to the form data
-    formData.append('name', name);
-    formData.append('price', price);
-    formData.append('quantity', quantity);
-    // Append other necessary fields like supplierName, etc.
-
-    // Append the image file to the form data if one exists
-    if (imageFile) {
-      formData.append('file', imageFile, imageFile.name);
-    }
-
-    // Send a POST request to the server with the form data
-    try {
-      const response = await fetch('/api/add-inventory', {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      // Parse the JSON response
-      const result = await response.json();
-
-      // Optionally, clear the form fields and update the UI accordingly
-      setName('');
-      setPrice('');
-      setQuantity('');
-      setImageFile(null);
-
-      // Add the new product to the products state to update the list
-      setProducts([...products, result]);
-
-      // Additional logic like closing a modal or showing a success message
-    } catch (error) {
-      console.error('Failed to add product:', error);
-      // Handle errors like showing an error message to the user
-    }
-  };
+  }, [page, limit, sortBy, sortOrder, inStock, trigger]); // Ensure effect runs when these values change
 
   return (
     <div>
@@ -110,7 +64,7 @@ const InventoryPage = () => {
       />
       <ProductTable products={products} />
       <PaginationControl page={page} totalPages={totalPages} onPageChange={setPage} />
-      <AddProductForm onAddProduct={handleAddProduct} />
+      <AddProductForm updateProducts={updateProducts} />
     </div>
   );
 };

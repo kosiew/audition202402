@@ -2,17 +2,11 @@ import { Box, Button, TextField } from '@mui/material';
 import { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 
-type AddProductFormProps = {
-  onAddProduct: (product: {
-    name: string;
-    price: string;
-    quantity: string;
-    supplierName: string;
-    imageFile: File | null;
-  }) => void;
-};
+interface Props {
+  updateProducts: () => void;
+}
 
-const AddProductForm: React.FC<AddProductFormProps> = ({ onAddProduct }) => {
+const AddProductForm: React.FC<Props> = ({ updateProducts }) => {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
@@ -25,19 +19,52 @@ const AddProductForm: React.FC<AddProductFormProps> = ({ onAddProduct }) => {
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
-  const handleSubmit = () => {
+  const handleAddProduct = async () => {
     // Check if all form inputs have values before submitting
     if (!name || !price || !quantity || !supplierName) {
       alert('Please fill in all fields.');
       return;
     }
-    onAddProduct({ name, price, quantity, supplierName, imageFile });
-    // Reset form fields if necessary
-    setName('');
-    setPrice('');
-    setQuantity('');
-    setSupplierName('');
-    setImageFile(null);
+
+    // Create a FormData instance to build the form data payload
+    const formData = new FormData();
+
+    // Append the product fields to the form data
+    formData.append('name', name);
+    formData.append('price', price);
+    formData.append('quantity', quantity);
+    // Append other necessary fields like supplierName, etc.
+
+    // Append the image file to the form data if one exists
+    if (imageFile) {
+      formData.append('file', imageFile, imageFile.name);
+    }
+
+    // Send a POST request to the server with the form data
+    try {
+      const response = await fetch('/api/add-inventory', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      // Parse the JSON response
+      const result = await response.json();
+      updateProducts(); // Trigger a state update to refresh the product list
+
+      // Optionally, clear the form fields and update the UI accordingly
+      setName('');
+      setPrice('');
+      setQuantity('');
+      setImageFile(null);
+      // Additional logic like closing a modal or showing a success message
+    } catch (error) {
+      console.error('Failed to add product:', error);
+      // Handle errors like showing an error message to the user
+    }
   };
 
   return (
@@ -71,7 +98,7 @@ const AddProductForm: React.FC<AddProductFormProps> = ({ onAddProduct }) => {
         {imageFile && <p>{imageFile.name}</p>} {/* Display selected file name */}
       </Box>
 
-      <Button onClick={handleSubmit}>Add Product</Button>
+      <Button onClick={handleAddProduct}>Add Product</Button>
     </div>
   );
 };
