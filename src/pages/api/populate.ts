@@ -25,7 +25,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       name: `Product ${timestamp} ${index + 1}`,
       price: parseFloat((Math.random() * 100).toFixed(2)), // Random price with 2 decimal places      quantity: Math.floor(Math.random() * 100), // Random quantity
       supplierId,
-      quantity: Math.floor(Math.random() * 100) + 1, // Random quantity between 1 and 100    
+      quantity: Math.floor(Math.random() * 51), // Random quantity between 1 and 100    
     }));
 
 
