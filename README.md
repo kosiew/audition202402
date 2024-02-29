@@ -43,3 +43,41 @@ curl -X POST http://localhost:3000/api/populate \
 -H "Content-Type: application/json" \
 -d '{"count": "1000", "supplierId": "1"}'
 
+#### Update supplier
+curl -X POST http://localhost:3000/api/update-inventory \
+-H "Content-Type: application/json" \
+-d '{
+  "id": "1",
+  "type": "supplier",
+  "data": {
+    "name": "Updated Supplier Name"
+  }
+}'
+
+### Update inventory
+
+curl -X POST http://localhost:3000/api/update-inventory \
+-H "Content-Type: application/json" \
+-d '{
+  "id": "1",
+  "type": "product",
+  "data": {
+    "name": "Updated Product Name",
+    "price": 20.99
+  }
+}'
+
+### Delete inventory
+
+curl -X DELETE http://localhost:3000/api/delete-inventory\?productId\=7
+
+### add inventory
+
+curl -X POST http://localhost:3000/api/add-inventory \
+-F "name=Sample Product" \
+-F "price=9.99" \
+-F "quantity=100" \
+-F "supplierName=New Supplier" \
+-F "file=@/Users/kosiew/Downloads/SCR-20240228-nrhf.png" \
+-H "Content-Type: multipart/form-data"
+
