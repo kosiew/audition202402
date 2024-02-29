@@ -1,4 +1,6 @@
 // pages/api/inventory/index.ts
+import { SortBy } from '@/types/sortBy';
+import { SortOrder } from '@/types/sortOrder';
 import { PrismaClient } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
@@ -7,8 +9,8 @@ const prisma = new PrismaClient();
 type QueryParams = {
   page?: string;
   limit?: string;
-  sortBy?: string;
-  sortOrder?: 'asc' | 'desc';
+  sortBy?: SortBy;
+  sortOrder?: SortOrder;
   // in-stock ie quantity > 0
   inStock?: String;
   productName?: string;
@@ -48,7 +50,7 @@ export default async function handler(
     take: limitNumber,
     skip,
     orderBy: {
-      [sortBy]: sortOrder,
+      ...(sortBy === 'supplier' ? { 'supplier.name': sortOrder } : { [sortBy]: sortOrder }),
     },
     where: {},
   };

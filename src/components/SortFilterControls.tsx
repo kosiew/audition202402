@@ -73,7 +73,8 @@ const SortFilterControls: React.FC<Props> = ({
         >
           <MenuItem value="name">Name</MenuItem>
           <MenuItem value="price">Price</MenuItem>
-          {/* Add other options as needed */}
+          <MenuItem value="supplier">Supplier</MenuItem>
+          <MenuItem value="quantity">Quantity</MenuItem>
         </Select>
       </FormControl>
 
