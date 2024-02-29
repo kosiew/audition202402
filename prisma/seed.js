@@ -10,6 +10,8 @@ async function main() {
   await prisma.supplier.deleteMany({});
   await prisma.user.deleteMany({});
   await prisma.permission.deleteMany({});
+  await prisma.role.deleteMany({});
+  await prisma.userRole.deleteMany({});
   const permissionsData = [
     { action: 'create', subject: 'Product' },
     { action: 'view', subject: 'Product' },
@@ -31,6 +33,27 @@ async function main() {
     },
   });
 
+  // create roles
+  const adminRole = await prisma.role.create({
+    data: {
+      name: 'Admin',
+      permissions: {
+        connect: createdPermissions.map(({ id }) => ({ id })),
+      },
+    },
+  });
+
+  const guestRole = await prisma.role.create({
+    data: {
+      name: 'Guest',
+      permissions: {
+        connect: createdPermissions
+          .filter((permission) => permission.action === 'view')
+          .map(({ id }) => ({ id })),
+      },
+    },
+  });
+
   // Add Users
   const emailVerified = new Date();
 
@@ -41,10 +64,10 @@ async function main() {
       email: 'admin@example.com',
       emailVerified,
       password: hashedPasswordAdmin,
-      permissions: {
-        connect: createdPermissions.map(({ id }) => ({
-          id,
-        })),
+      userRoles: {
+        create: {
+          role: { connect: { id: adminRole.id } },
+        },
       },
     },
   });
@@ -56,12 +79,10 @@ async function main() {
       email: 'user1@example.com',
       password: hashedPasswordUser,
       emailVerified,
-      permissions: {
-        connect: createdPermissions
-          .filter((permission) => permission.action === 'view')
-          .map(({ id }) => ({
-            id,
-          })),
+      userRoles: {
+        create: {
+          role: { connect: { id: guestRole.id } },
+        },
       },
     },
   });

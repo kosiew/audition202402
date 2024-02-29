@@ -31,16 +31,6 @@ model Supplier {
   products Product[]
 }
 
-model User {
-  id            Int          @id @default(autoincrement())
-  name          String?
-  email         String       @unique
-  emailVerified DateTime?
-  password      String
-  sessions      Session[]
-  permissions   Permission[] @relation("UserPermissions")
-}
-
 model Session {
   id           Int      @id @default(autoincrement())
   userId       Int
@@ -58,11 +48,41 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
+model User {
+  id            Int          @id @default(autoincrement())
+  name          String?
+  email         String       @unique
+  emailVerified DateTime?
+  password      String
+  sessions      Session[]
+  permissions   Permission[] @relation("UserPermissions") // For direct permission assignments
+  userRoles     UserRole[]
+}
+
+model Role {
+  id          Int          @id @default(autoincrement())
+  name        String       @unique
+  permissions Permission[]
+  userRoles   UserRole[]
+}
+
+model UserRole {
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+
+  roleId Int
+  role   Role @relation(fields: [roleId], references: [id])
+
+  @@id([userId, roleId])
+}
+
 model Permission {
   id      Int    @id @default(autoincrement())
   action  String
   subject String
   users   User[] @relation("UserPermissions")
+  Role    Role?  @relation(fields: [roleId], references: [id])
+  roleId  Int?
 
   @@unique([action, subject])
 }
