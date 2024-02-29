@@ -49,7 +49,7 @@ export default async function handler(
   let queryOptions = {
     take: limitNumber,
     skip,
-    orderBy: sortBy !== 'supplier' ? { [sortBy]: sortOrder } : undefined,
+    orderBy: { [sortBy]: sortOrder },
     where: {},
   };
 
@@ -83,15 +83,6 @@ export default async function handler(
         supplier: true,
       },
     });
-    if (sortBy === 'supplier') {
-      products.sort((a, b) => {
-        if (sortOrder === 'asc') {
-          return a.supplier.name.localeCompare(b.supplier.name);
-        } else {
-          return b.supplier.name.localeCompare(a.supplier.name);
-        }
-      });
-    }
     const total = await prisma.product.count({
       where: queryOptions.where,
     });

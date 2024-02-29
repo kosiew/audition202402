@@ -1,1 +1,1 @@
-export type SortBy = 'name' | 'price' | 'supplier' | 'quantity';
+export type SortBy = 'name' | 'price' | 'quantity';
