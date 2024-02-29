@@ -39,7 +39,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         await prisma.supplier.delete({ where: { id: supplierId } });
       }
 
-      return res.status(204).end()
+      return res.status(204).end();
     } catch (error) {
       console.error('Failed to delete product:', error);
       return res.status(500).json({ message: 'Failed to delete product' });

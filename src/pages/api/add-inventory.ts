@@ -33,7 +33,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       if (err) {
         return res.status(500).json({ message: 'Form parsing error' });
       }
-      const name = fields.name?.[0]
+      const name = fields.name?.[0];
       const price = fields.price?.[0];
       const quantity = fields.quantity?.[0];
       const supplierName = fields.supplierName?.[0];
@@ -41,7 +41,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       let imageUrl = ''; // Initialize image URL as null
 
       if (files) {
-        const file = files.file?.[0]
+        const file = files.file?.[0];
         if (file) {
           // Check if there is an image file and it has a valid path
           if (file.filepath) {
@@ -76,7 +76,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             price: parseFloat(price),
             quantity: parseInt(quantity),
             supplierId: supplier.id,
-            imageUrl
+            imageUrl,
           },
         });
 

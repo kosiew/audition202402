@@ -1,5 +1,24 @@
 import React, { useState, useEffect, useCallback, ChangeEvent } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Box, TextField, FormControl, InputLabel, Select, MenuItem, Checkbox, FormControlLabel, Pagination, PaginationItem } from '@mui/material';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Button,
+  Box,
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Checkbox,
+  FormControlLabel,
+  Pagination,
+  PaginationItem,
+} from '@mui/material';
 import { useDropzone } from 'react-dropzone';
 
 type Product = {
@@ -64,11 +83,7 @@ const InventoryPage = () => {
       {/* Sorting and Filtering Controls */}
       <FormControl variant="outlined" sx={{ m: 1, minWidth: 120 }}>
         <InputLabel>Items per Page</InputLabel>
-        <Select
-          value={limit}
-          onChange={(e) => setLimit(e.target.value)}
-          label="Items per Page"
-        >
+        <Select value={limit} onChange={(e) => setLimit(e.target.value)} label="Items per Page">
           <MenuItem value="5">5</MenuItem>
           <MenuItem value="10">10</MenuItem>
           <MenuItem value="20">20</MenuItem>
@@ -101,7 +116,9 @@ const InventoryPage = () => {
           <TableBody>
             {products.map((product) => (
               <TableRow key={product.id}>
-                <TableCell component="th" scope="row">{product.name}</TableCell>
+                <TableCell component="th" scope="row">
+                  {product.name}
+                </TableCell>
                 <TableCell align="right">{product.price}</TableCell>
                 <TableCell align="right">{product.quantity}</TableCell>
               </TableRow>
@@ -113,16 +130,29 @@ const InventoryPage = () => {
       <div>
         <TextField label="Name" value={name} onChange={(e) => setName(e.target.value)} />
         <TextField label="Price" value={price} onChange={(e) => setPrice(e.target.value)} />
-        <TextField label="Quantity" value={quantity} onChange={(e) => setQuantity(e.target.value)} />
+        <TextField
+          label="Quantity"
+          value={quantity}
+          onChange={(e) => setQuantity(e.target.value)}
+        />
 
         {/* Drag and Drop File Input */}
-        <Box {...getRootProps()} sx={{ border: '2px dashed #ccc', padding: '20px', textAlign: 'center', cursor: 'pointer', marginTop: '20px' }}>
+        <Box
+          {...getRootProps()}
+          sx={{
+            border: '2px dashed #ccc',
+            padding: '20px',
+            textAlign: 'center',
+            cursor: 'pointer',
+            marginTop: '20px',
+          }}
+        >
           <input {...getInputProps()} />
-          {
-            isDragActive ?
-              <p>Drop the image here ...</p> :
-              <p>Drag 'n' drop an image here, or click to select an image</p>
-          }
+          {isDragActive ? (
+            <p>Drop the image here ...</p>
+          ) : (
+            <p>Drag 'n' drop an image here, or click to select an image</p>
+          )}
           {imageFile && <p>{imageFile.name}</p>} {/* Display selected file name */}
         </Box>
 

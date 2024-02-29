@@ -24,7 +24,13 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ProductResponse | { error: string }>
 ) {
-  const { page = '1', limit = '10', sortBy = 'name', sortOrder = 'asc', inStock } = req.query as QueryParams;
+  const {
+    page = '1',
+    limit = '10',
+    sortBy = 'name',
+    sortOrder = 'asc',
+    inStock,
+  } = req.query as QueryParams;
   const pageNumber = parseInt(page);
   const limitNumber = parseInt(limit);
   const skip = (pageNumber - 1) * limitNumber;

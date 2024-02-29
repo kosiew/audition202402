@@ -25,9 +25,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       name: `Product ${timestamp} ${index + 1}`,
       price: parseFloat((Math.random() * 100).toFixed(2)), // Random price with 2 decimal places      quantity: Math.floor(Math.random() * 100), // Random quantity
       supplierId,
-      quantity: Math.floor(Math.random() * 51), // Random quantity between 1 and 100    
+      quantity: Math.floor(Math.random() * 51), // Random quantity between 1 and 100
     }));
-
 
     // Bulk insert products
     try {
@@ -36,7 +35,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         skipDuplicates: true, // Optional: skip duplicates
       });
 
-      return res.status(200).json({ message: `Successfully inserted ${numberOfProducts} products` });
+      return res
+        .status(200)
+        .json({ message: `Successfully inserted ${numberOfProducts} products` });
     } catch (error) {
       console.error('Failed to populate products:', error);
       return res.status(500).json({ message: 'Failed to populate products' });
