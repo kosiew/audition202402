@@ -60,8 +60,8 @@ export default async function handler(
       [inStockBool ? 'gt' : 'equals']: 0,
     },
     price: {
-      gte: minPriceNumber,
-      lte: maxPriceNumber,
+      ...(minPriceNumber !== -Infinity && { gte: minPriceNumber }),
+      ...(maxPriceNumber !== Infinity && { lte: maxPriceNumber }),
     },
     name: {
       contains: productName,

@@ -3,6 +3,7 @@ import PaginationControl from '@/components/PaginationControl';
 import ProductTable from '@/components/ProductTable';
 import SortFilterControls, { SortBy, SortOrder } from '@/components/SortFilterControls';
 import { Product } from '@/types/product';
+import { debounce } from '@mui/material';
 import { useEffect, useState } from 'react';
 
 const InventoryPage = () => {
@@ -40,11 +41,22 @@ const InventoryPage = () => {
 
       setProducts(data.data);
       setTotalPages(data.totalPages);
-      // Set additional state as necessary, e.g., total pages for pagination
     };
 
-    fetchProducts();
-  }, [page, limit, sortBy, sortOrder, inStock, trigger]); // Ensure effect runs when these values change
+    // debounce the fetchProducts function to prevent rapid API calls
+    const debouncedFetchProducts = debounce(fetchProducts, 500);
+    debouncedFetchProducts();
+  }, [
+    page,
+    limit,
+    sortBy,
+    sortOrder,
+    inStock,
+    trigger,
+    filterPriceRange,
+    filterProductName,
+    filterSupplierName,
+  ]); // Ensure effect runs when these values change
 
   return (
     <div>

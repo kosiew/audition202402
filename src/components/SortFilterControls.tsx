@@ -1,4 +1,5 @@
 import {
+  Button,
   Checkbox,
   FormControl,
   FormControlLabel,
@@ -46,6 +47,13 @@ const SortFilterControls: React.FC<Props> = ({
   filterPriceRange,
   setFilterPriceRange,
 }) => {
+  const clearFilters = () => {
+    setFilterProductName('');
+    setFilterSupplierName('');
+    setFilterPriceRange([0, Infinity]);
+    setInStock(true);
+  };
+
   return (
     <>
       <FormControl variant="outlined" sx={{ m: 1, minWidth: 120 }}>
@@ -83,34 +91,42 @@ const SortFilterControls: React.FC<Props> = ({
         </Select>
       </FormControl>
 
-      <FormControlLabel
-        control={<Checkbox checked={inStock} onChange={(e) => setInStock(e.target.checked)} />}
-        label="In Stock Only"
-      />
-      {/* filter controls as needed */}
-      <TextField
-        label="Product Name"
-        value={filterProductName}
-        onChange={(e) => setFilterProductName(e.target.value)}
-      />
-      <TextField
-        label="Supplier Name"
-        value={filterSupplierName}
-        onChange={(e) => setFilterSupplierName(e.target.value)}
-      />
-      {/* You can create a range input or use two separate text fields for min and max price */}
-      <TextField
-        label="Minimum Price"
-        type="number"
-        value={filterPriceRange[0]}
-        onChange={(e) => setFilterPriceRange([Number(e.target.value), filterPriceRange[1]])}
-      />
-      <TextField
-        label="Maximum Price"
-        type="number"
-        value={filterPriceRange[1]}
-        onChange={(e) => setFilterPriceRange([filterPriceRange[0], Number(e.target.value)])}
-      />
+      <section>
+        <h2>Filter</h2>
+        {/* filter controls as needed */}
+        <TextField
+          label="Product Name"
+          value={filterProductName}
+          onChange={(e) => setFilterProductName(e.target.value)}
+        />
+        <TextField
+          label="Supplier Name"
+          value={filterSupplierName}
+          onChange={(e) => setFilterSupplierName(e.target.value)}
+        />
+        {/* You can create a range input or use two separate text fields for min and max price */}
+        <TextField
+          label="Minimum Price"
+          type="number"
+          value={filterPriceRange[0]}
+          onChange={(e) => setFilterPriceRange([Number(e.target.value), filterPriceRange[1]])}
+        />
+        <TextField
+          label="Maximum Price"
+          type="number"
+          value={filterPriceRange[1]}
+          onChange={(e) => setFilterPriceRange([filterPriceRange[0], Number(e.target.value)])}
+        />
+
+        <FormControlLabel
+          sx={{ pl: '10px' }}
+          control={<Checkbox checked={inStock} onChange={(e) => setInStock(e.target.checked)} />}
+          label="In Stock Only"
+        />
+        <Button variant="outlined" color="primary" onClick={clearFilters} sx={{ m: 1 }}>
+          Clear Filters
+        </Button>
+      </section>
     </>
   );
 };
