@@ -1,9 +1,8 @@
 // pages/api/add-inventory.ts
 import { PrismaClient } from '@prisma/client';
-import type { NextApiRequest, NextApiResponse } from 'next';
-import formidable from 'formidable';
 import { v2 as cloudinary } from 'cloudinary';
-import { Fields, Files, File, IncomingForm } from 'formidable';
+import { Fields, Files, IncomingForm } from 'formidable';
+import type { NextApiRequest, NextApiResponse } from 'next';
 
 const prisma = new PrismaClient();
 

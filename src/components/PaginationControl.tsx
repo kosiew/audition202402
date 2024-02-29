@@ -4,7 +4,7 @@ import React from 'react';
 interface PaginationControlProps {
   page: number;
   totalPages: number;
-  onPageChange: (page: number) => void;
+  onPageChange: (_page: number) => void;
 }
 
 const PaginationControl: React.FC<PaginationControlProps> = ({

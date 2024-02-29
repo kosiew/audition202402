@@ -51,8 +51,6 @@ const AddProductForm: React.FC<Props> = ({ updateProducts }) => {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
-      // Parse the JSON response
-      const result = await response.json();
       updateProducts(); // Trigger a state update to refresh the product list
 
       // Optionally, clear the form fields and update the UI accordingly
@@ -93,7 +91,7 @@ const AddProductForm: React.FC<Props> = ({ updateProducts }) => {
         {isDragActive ? (
           <p>Drop the image here ...</p>
         ) : (
-          <p>Drag 'n' drop an image here, or click to select an image</p>
+          <p>Drag &apos;n&apos; drop an image here, or click to select an image</p>
         )}
         {imageFile && <p>{imageFile.name}</p>} {/* Display selected file name */}
       </Box>

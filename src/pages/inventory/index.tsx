@@ -3,11 +3,9 @@ import PaginationControl from '@/components/PaginationControl';
 import ProductTable from '@/components/ProductTable';
 import SortFilterControls, { SortBy, SortOrder } from '@/components/SortFilterControls';
 import { Product } from '@/types/product';
-import { useCallback, useEffect, useState } from 'react';
-import { useDropzone } from 'react-dropzone';
+import { useEffect, useState } from 'react';
 
 const InventoryPage = () => {
-  const [imageFile, setImageFile] = useState<File | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1); // Add state for total pages
@@ -19,13 +17,6 @@ const InventoryPage = () => {
 
   // To trigger a state change, increment the counter
   const updateProducts = () => setTrigger((trigger) => trigger + 1);
-  // Handle file drop
-  const onDrop = useCallback((acceptedFiles: File[]) => {
-    // Assuming you want to use only the first file
-    setImageFile(acceptedFiles[0]);
-  }, []);
-
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
   useEffect(() => {
     const fetchProducts = async () => {
