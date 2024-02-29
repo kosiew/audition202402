@@ -33,6 +33,7 @@ const AddProductForm: React.FC<Props> = ({ updateProducts }) => {
     formData.append('name', name);
     formData.append('price', price);
     formData.append('quantity', quantity);
+    formData.append('supplierName', supplierName);
     // Append other necessary fields like supplierName, etc.
 
     // Append the image file to the form data if one exists
