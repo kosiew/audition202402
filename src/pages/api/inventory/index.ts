@@ -53,7 +53,12 @@ export default async function handler(
   };
 
   try {
-    const products = await prisma.product.findMany(queryOptions);
+    const products = await prisma.product.findMany({
+      ...queryOptions,
+      include: {
+        supplier: true,
+      },
+    });
     const total = await prisma.product.count({
       where: queryOptions.where,
     });

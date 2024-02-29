@@ -22,6 +22,7 @@ const ProductTable: React.FC<ProductTableProps> = ({ products }) => (
           <TableCell>Name</TableCell>
           <TableCell align="right">Price</TableCell>
           <TableCell align="right">Quantity</TableCell>
+          <TableCell align="right">Supplier Name</TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
@@ -32,6 +33,7 @@ const ProductTable: React.FC<ProductTableProps> = ({ products }) => (
             </TableCell>
             <TableCell align="right">{product.price}</TableCell>
             <TableCell align="right">{product.quantity}</TableCell>
+            <TableCell align="right">{product.supplier.name}</TableCell>
           </TableRow>
         ))}
       </TableBody>

@@ -58,6 +58,7 @@ const AddProductForm: React.FC<Props> = ({ updateProducts }) => {
       setName('');
       setPrice('');
       setQuantity('');
+      setSupplierName('');
       setImageFile(null);
       // Additional logic like closing a modal or showing a success message
     } catch (error) {
