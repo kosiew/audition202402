@@ -1,14 +1,14 @@
-import React from 'react';
+import { Product } from '@/types/product';
 import {
+  Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
 } from '@mui/material';
-import { Product } from '@/types/product';
+import React from 'react';
 
 interface ProductTableProps {
   products: Product[];
