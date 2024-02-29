@@ -15,6 +15,7 @@ const InventoryPage = () => {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
   const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1); // Add state for total pages
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
   const [limit, setLimit] = useState('10');
@@ -45,6 +46,7 @@ const InventoryPage = () => {
       const data = await response.json();
 
       setProducts(data.data);
+      setTotalPages(data.totalPages);
       // Set additional state as necessary, e.g., total pages for pagination
     };
 
@@ -107,7 +109,7 @@ const InventoryPage = () => {
           </TableBody>
         </Table>
       </TableContainer>
-      <Pagination count={10} page={page} onChange={(event, value) => setPage(value)} />
+      <Pagination count={totalPages} page={page} onChange={(event, value) => setPage(value)} />
       <div>
         <TextField label="Name" value={name} onChange={(e) => setName(e.target.value)} />
         <TextField label="Price" value={price} onChange={(e) => setPrice(e.target.value)} />
