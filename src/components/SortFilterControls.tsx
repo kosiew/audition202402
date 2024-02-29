@@ -1,3 +1,5 @@
+import { SortBy } from '@/types/sortBy';
+import { SortOrder } from '@/types/sortOrder';
 import {
   Button,
   Checkbox,
@@ -9,10 +11,6 @@ import {
   TextField,
 } from '@mui/material';
 import React from 'react';
-
-export type SortOrder = 'asc' | 'desc';
-
-export type SortBy = 'name' | 'price';
 
 type Props = {
   limit: string;

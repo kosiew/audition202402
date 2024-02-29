@@ -1,8 +1,10 @@
 import AddProductForm from '@/components/AddProductForm';
 import PaginationControl from '@/components/PaginationControl';
 import ProductTable from '@/components/ProductTable';
-import SortFilterControls, { SortBy, SortOrder } from '@/components/SortFilterControls';
+import SortFilterControls from '@/components/SortFilterControls';
 import { Product } from '@/types/product';
+import { SortBy } from '@/types/sortBy';
+import { SortOrder } from '@/types/sortOrder';
 import { debounce } from '@mui/material';
 import { useEffect, useState } from 'react';
 
