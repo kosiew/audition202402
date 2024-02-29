@@ -1,7 +1,7 @@
 // pages/api/add-inventory.ts
 import { PrismaClient } from '@prisma/client';
 import { v2 as cloudinary } from 'cloudinary';
-import { Fields, Files, IncomingForm } from 'formidable';
+import { IncomingForm } from 'formidable';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 const prisma = new PrismaClient();
@@ -26,67 +26,67 @@ export const config = {
 };
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method === 'POST') {
-    const form = new IncomingForm();
-    form.parse(req, async (err: Error, fields: Fields, files: Files) => {
-      if (err) {
-        return res.status(500).json({ message: 'Form parsing error' });
-      }
-      const name = fields.name?.[0];
-      const price = fields.price?.[0];
-      const quantity = fields.quantity?.[0];
-      const supplierName = fields.supplierName?.[0];
-
-      let imageUrl = ''; // Initialize image URL as null
-
-      if (files) {
-        const file = files.file?.[0];
-        if (file) {
-          // Check if there is an image file and it has a valid path
-          if (file.filepath) {
-            // Upload the image to Cloudinary
-            const result = await cloudinary.uploader.upload(file.filepath);
-            imageUrl = result.url; // Set the Cloudinary image URL
-          }
-        }
-      }
-
-      // Extract other form fields
-      if (!name || !price || !quantity || !supplierName) {
-        return res.status(400).json({ message: 'Missing required fields' });
-      }
-      try {
-        // Check if the supplier exists
-        let supplier = await prisma.supplier.findUnique({
-          where: { name: supplierName },
-        });
-
-        // If the supplier doesn't exist, create a new one
-        if (!supplier) {
-          supplier = await prisma.supplier.create({
-            data: { name: supplierName },
-          });
-        }
-
-        // Add the product with the supplierId
-        const product = await prisma.product.create({
-          data: {
-            name,
-            price: parseFloat(price),
-            quantity: parseInt(quantity),
-            supplierId: supplier.id,
-            imageUrl,
-          },
-        });
-
-        res.status(201).json(product);
-      } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Error adding product' });
-      }
-    });
-  } else {
+  if (req.method !== 'POST') {
     res.setHeader('Allow', ['POST']);
-    res.status(405).end(`Method ${req.method} Not Allowed`);
+    return res.status(405).end(`Method ${req.method} Not Allowed`);
   }
+
+  const form = new IncomingForm();
+  form.parse(req, async (err, fields, files) => {
+    if (err) {
+      return res.status(500).json({ message: 'Form parsing error' });
+    }
+
+    const name = fields.name?.[0];
+    const price = fields.price?.[0];
+    const quantity = fields.quantity?.[0];
+    const supplierName = fields.supplierName?.[0];
+
+    // Ensure all fields are present
+    if (!name || !price || !quantity || !supplierName) {
+      return res.status(400).json({ message: 'Missing required fields' });
+    }
+
+    let imageUrl = ''; // Initialize image URL as null
+    if (files.file) {
+      const file = Array.isArray(files.file) ? files.file[0] : files.file;
+      if (file.filepath) {
+        try {
+          const result = await cloudinary.uploader.upload(file.filepath);
+          imageUrl = result.url; // Set the Cloudinary image URL
+        } catch (uploadError) {
+          console.error('Image upload error:', uploadError);
+          return res.status(500).json({ message: 'Image upload failed' });
+        }
+      }
+    }
+
+    try {
+      // Logic to handle supplier and product creation
+      let supplier = await prisma.supplier.findUnique({
+        where: { name: supplierName },
+      });
+
+      if (!supplier) {
+        supplier = await prisma.supplier.create({
+          data: { name: supplierName },
+        });
+      }
+
+      const product = await prisma.product.create({
+        data: {
+          name,
+          price: parseFloat(price),
+          quantity: parseInt(quantity),
+          supplierId: supplier.id,
+          imageUrl,
+        },
+      });
+
+      return res.status(201).json(product);
+    } catch (dbError) {
+      console.error('Database operation failed:', dbError);
+      return res.status(500).json({ message: 'Error adding product' });
+    }
+  });
 }
