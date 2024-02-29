@@ -10,11 +10,13 @@ import React from 'react';
 
 export type SortOrder = 'asc' | 'desc';
 
+export type SortBy = 'name' | 'price';
+
 type SortFilterControlsProps = {
   limit: string;
   setLimit: React.Dispatch<React.SetStateAction<string>>;
-  sortBy: string;
-  setSortBy: React.Dispatch<React.SetStateAction<string>>;
+  sortBy: SortBy;
+  setSortBy: React.Dispatch<React.SetStateAction<SortBy>>;
   inStock: boolean;
   setInStock: React.Dispatch<React.SetStateAction<boolean>>;
   sortOrder: SortOrder;
@@ -45,7 +47,11 @@ const SortFilterControls: React.FC<SortFilterControlsProps> = ({
 
       <FormControl variant="outlined" sx={{ m: 1, minWidth: 120 }}>
         <InputLabel>Sort By</InputLabel>
-        <Select value={sortBy} onChange={(e) => setSortBy(e.target.value)} label="Sort By">
+        <Select
+          value={sortBy}
+          onChange={(e) => setSortBy(e.target.value as SortBy)}
+          label="Sort By"
+        >
           <MenuItem value="name">Name</MenuItem>
           <MenuItem value="price">Price</MenuItem>
           {/* Add other options as needed */}
