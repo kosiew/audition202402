@@ -11,6 +11,10 @@ type QueryParams = {
   sortOrder?: 'asc' | 'desc';
   // in-stock ie quantity > 0
   inStock?: String;
+  productName?: string;
+  supplierName?: string;
+  minPrice?: string;
+  maxPrice?: string;
 };
 
 type ProductResponse = {
@@ -29,12 +33,17 @@ export default async function handler(
     limit = '10',
     sortBy = 'name',
     sortOrder = 'asc',
-    inStock,
+    inStock = 'true',
+    productName = '',
+    supplierName = '',
+    minPrice = '0',
+    maxPrice = 'Infinity',
   } = req.query as QueryParams;
   const pageNumber = parseInt(page);
   const limitNumber = parseInt(limit);
   const skip = (pageNumber - 1) * limitNumber;
-
+  const minPriceNumber = parseFloat(minPrice);
+  const maxPriceNumber = maxPrice === 'Infinity' ? Infinity : parseFloat(maxPrice);
   let queryOptions = {
     take: limitNumber,
     skip,
@@ -49,6 +58,21 @@ export default async function handler(
   queryOptions.where = {
     quantity: {
       [inStockBool ? 'gt' : 'equals']: 0,
+    },
+    price: {
+      gte: minPriceNumber,
+      lte: maxPriceNumber,
+    },
+    name: {
+      contains: productName,
+      mode: 'insensitive',
+    },
+    // Case-insensitive substring search for supplier name through a relation
+    supplier: {
+      name: {
+        contains: supplierName,
+        mode: 'insensitive',
+      },
     },
   };
 

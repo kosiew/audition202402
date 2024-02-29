@@ -5,6 +5,7 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  TextField,
 } from '@mui/material';
 import React from 'react';
 
@@ -12,7 +13,7 @@ export type SortOrder = 'asc' | 'desc';
 
 export type SortBy = 'name' | 'price';
 
-type SortFilterControlsProps = {
+type Props = {
   limit: string;
   setLimit: React.Dispatch<React.SetStateAction<string>>;
   sortBy: SortBy;
@@ -21,9 +22,15 @@ type SortFilterControlsProps = {
   setInStock: React.Dispatch<React.SetStateAction<boolean>>;
   sortOrder: SortOrder;
   setSortOrder: React.Dispatch<React.SetStateAction<SortOrder>>;
+  filterProductName: string;
+  setFilterProductName: React.Dispatch<React.SetStateAction<string>>;
+  filterSupplierName: string;
+  setFilterSupplierName: React.Dispatch<React.SetStateAction<string>>;
+  filterPriceRange: [number, number];
+  setFilterPriceRange: React.Dispatch<React.SetStateAction<[number, number]>>;
 };
 
-const SortFilterControls: React.FC<SortFilterControlsProps> = ({
+const SortFilterControls: React.FC<Props> = ({
   limit,
   setLimit,
   sortBy,
@@ -32,6 +39,12 @@ const SortFilterControls: React.FC<SortFilterControlsProps> = ({
   setInStock,
   sortOrder,
   setSortOrder,
+  filterProductName,
+  setFilterProductName,
+  filterSupplierName,
+  setFilterSupplierName,
+  filterPriceRange,
+  setFilterPriceRange,
 }) => {
   return (
     <>
@@ -73,6 +86,30 @@ const SortFilterControls: React.FC<SortFilterControlsProps> = ({
       <FormControlLabel
         control={<Checkbox checked={inStock} onChange={(e) => setInStock(e.target.checked)} />}
         label="In Stock Only"
+      />
+      {/* filter controls as needed */}
+      <TextField
+        label="Product Name"
+        value={filterProductName}
+        onChange={(e) => setFilterProductName(e.target.value)}
+      />
+      <TextField
+        label="Supplier Name"
+        value={filterSupplierName}
+        onChange={(e) => setFilterSupplierName(e.target.value)}
+      />
+      {/* You can create a range input or use two separate text fields for min and max price */}
+      <TextField
+        label="Minimum Price"
+        type="number"
+        value={filterPriceRange[0]}
+        onChange={(e) => setFilterPriceRange([Number(e.target.value), filterPriceRange[1]])}
+      />
+      <TextField
+        label="Maximum Price"
+        type="number"
+        value={filterPriceRange[1]}
+        onChange={(e) => setFilterPriceRange([filterPriceRange[0], Number(e.target.value)])}
       />
     </>
   );

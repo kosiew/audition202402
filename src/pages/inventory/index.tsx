@@ -14,6 +14,9 @@ const InventoryPage = () => {
   const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
   const [inStock, setInStock] = useState(true);
   const [trigger, setTrigger] = useState(0);
+  const [filterProductName, setFilterProductName] = useState('');
+  const [filterSupplierName, setFilterSupplierName] = useState('');
+  const [filterPriceRange, setFilterPriceRange] = useState<[number, number]>([0, Infinity]);
 
   // To trigger a state change, increment the counter
   const updateProducts = () => setTrigger((trigger) => trigger + 1);
@@ -26,6 +29,10 @@ const InventoryPage = () => {
         sortBy,
         sortOrder,
         inStock: inStock.toString(),
+        productName: filterProductName,
+        supplierName: filterSupplierName,
+        minPrice: filterPriceRange[0].toString(),
+        maxPrice: filterPriceRange[1].toString(),
       }).toString();
 
       const response = await fetch(`/api/inventory?${queryParams}`);
@@ -52,6 +59,12 @@ const InventoryPage = () => {
         setInStock={setInStock}
         sortOrder={sortOrder}
         setSortOrder={setSortOrder}
+        filterProductName={filterProductName}
+        setFilterProductName={setFilterProductName}
+        filterSupplierName={filterSupplierName}
+        setFilterSupplierName={setFilterSupplierName}
+        filterPriceRange={filterPriceRange}
+        setFilterPriceRange={setFilterPriceRange}
       />
       <ProductTable products={products} />
       <PaginationControl page={page} totalPages={totalPages} onPageChange={setPage} />
