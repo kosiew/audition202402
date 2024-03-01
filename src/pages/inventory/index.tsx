@@ -69,15 +69,7 @@ const InventoryPage = () => {
     <div>
       <h1>Inventory</h1>
 
-      <Button
-        onClick={() =>
-          signOut().then(() => {
-            window.location.href = '/';
-          })
-        }
-      >
-        Sign Out
-      </Button>
+      <Button onClick={() => signOut({ redirect: true, callbackUrl: '/' })}>Sign Out</Button>
       <SortFilterControls
         limit={limit}
         setLimit={setLimit}

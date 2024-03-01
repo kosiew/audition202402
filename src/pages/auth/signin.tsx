@@ -1,4 +1,5 @@
 // pages/auth/signin.tsx
+import { Button, Container, TextField, Typography } from '@mui/material';
 import { signIn } from 'next-auth/react';
 import { useState } from 'react';
 
@@ -24,21 +25,41 @@ export default function SignIn() {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label htmlFor="username">Email</label>
-        <input id="email" type="text" value={email} onChange={(e) => setEmail(e.target.value)} />
-      </div>
-      <div>
-        <label htmlFor="password">Password</label>
-        <input
-          id="password"
+    <Container component="main" maxWidth="xs">
+      <Typography component="h1" variant="h5">
+        Sign In
+      </Typography>
+      <form onSubmit={handleSubmit}>
+        <TextField
+          variant="outlined"
+          margin="normal"
+          required
+          fullWidth
+          id="email"
+          label="Email Address"
+          name="email"
+          autoComplete="email"
+          autoFocus
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <TextField
+          variant="outlined"
+          margin="normal"
+          required
+          fullWidth
+          name="password"
+          label="Password"
           type="password"
+          id="password"
+          autoComplete="current-password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-      </div>
-      <button type="submit">Sign In</button>
-    </form>
+        <Button type="submit" fullWidth variant="contained" color="primary">
+          Sign In
+        </Button>
+      </form>
+    </Container>
   );
 }
