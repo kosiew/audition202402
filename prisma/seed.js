@@ -9,10 +9,9 @@ async function main() {
   await prisma.product.deleteMany({});
   await prisma.supplier.deleteMany({});
   await prisma.user.deleteMany({});
-  await prisma.permission.deleteMany({});
   await prisma.role.deleteMany({});
-  await prisma.userRole.deleteMany({});
-  const permissionsData = [
+  await prisma.permission.deleteMany({});
+  const productPermissionsData = [
     { action: 'create', subject: 'Product' },
     { action: 'view', subject: 'Product' },
     { action: 'update', subject: 'Product' },
@@ -21,12 +20,33 @@ async function main() {
 
   // create permissions
   await prisma.permission.createMany({
-    data: permissionsData,
+    data: productPermissionsData,
   });
 
-  const createdPermissions = await prisma.permission.findMany({
+  const userPermissionsData = [
+    { action: 'create', subject: 'User' },
+    { action: 'view', subject: 'User' },
+    { action: 'update', subject: 'User' },
+    { action: 'delete', subject: 'User' },
+  ];
+
+  // create permissions
+  await prisma.permission.createMany({
+    data: userPermissionsData,
+  });
+
+  const productPermissions = await prisma.permission.findMany({
     where: {
-      OR: permissionsData.map(({ action, subject }) => ({
+      OR: productPermissionsData.map(({ action, subject }) => ({
+        action,
+        subject,
+      })),
+    },
+  });
+
+  const userPermissions = await prisma.permission.findMany({
+    where: {
+      OR: userPermissionsData.map(({ action, subject }) => ({
         action,
         subject,
       })),
@@ -38,7 +58,10 @@ async function main() {
     data: {
       name: 'Admin',
       permissions: {
-        connect: createdPermissions.map(({ id }) => ({ id })),
+        connect: [
+          ...productPermissions.map(({ id }) => ({ id })),
+          ...userPermissions.map(({ id }) => ({ id })),
+        ],
       },
     },
   });
@@ -47,7 +70,7 @@ async function main() {
     data: {
       name: 'Guest',
       permissions: {
-        connect: createdPermissions
+        connect: productPermissions
           .filter((permission) => permission.action === 'view')
           .map(({ id }) => ({ id })),
       },
@@ -64,10 +87,8 @@ async function main() {
       email: 'admin@example.com',
       emailVerified,
       password: hashedPasswordAdmin,
-      userRoles: {
-        create: {
-          role: { connect: { id: adminRole.id } },
-        },
+      roles: {
+        connect: [{ id: adminRole.id }],
       },
     },
   });
@@ -79,10 +100,8 @@ async function main() {
       email: 'user1@example.com',
       password: hashedPasswordUser,
       emailVerified,
-      userRoles: {
-        create: {
-          role: { connect: { id: guestRole.id } },
-        },
+      roles: {
+        connect: [{ id: guestRole.id }],
       },
     },
   });
