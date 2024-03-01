@@ -82,8 +82,14 @@ curl -X POST http://localhost:3000/api/add-inventory \
 -F "file=@/Users/kosiew/Downloads/SCR-20240228-nrhf.png" \
 -H "Content-Type: multipart/form-data"
 
-
 ### create role
+
 curl -X POST http://localhost:3000/api/roles \
 -H "Content-Type: application/json" \
 -d '{"name": "Admin", "description": "Administrator role with full access"}'
+
+### create permission
+curl -X POST http://localhost:3000/api/permissions \
+-H "Content-Type: application/json" \
+-d '{"action": "manage", "subject": "all"}'
+
