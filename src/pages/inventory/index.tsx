@@ -1,13 +1,13 @@
 import AddProductForm from '@/components/AddProductForm';
 import PaginationControl from '@/components/PaginationControl';
 import ProductTable from '@/components/ProductTable';
+import SignOutButton from '@/components/SignOutButton';
 import SortFilterControls from '@/components/SortFilterControls';
 import { useRequireAuth } from '@/hooks/useRequireAuth';
 import { Product } from '@/types/product';
 import { SortBy } from '@/types/sortBy';
 import { SortOrder } from '@/types/sortOrder';
-import { Button, debounce } from '@mui/material';
-import { signOut } from 'next-auth/react';
+import { debounce } from '@mui/material';
 import { useEffect, useState } from 'react';
 
 const InventoryPage = () => {
@@ -69,7 +69,8 @@ const InventoryPage = () => {
     <div>
       <h1>Inventory</h1>
 
-      <Button onClick={() => signOut({ redirect: true, callbackUrl: '/' })}>Sign Out</Button>
+      <SignOutButton />
+
       <SortFilterControls
         limit={limit}
         setLimit={setLimit}
