@@ -3,14 +3,14 @@ import { signIn } from 'next-auth/react';
 import { useState } from 'react';
 
 export default function SignIn() {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const result = await signIn('credentials', {
       redirect: false,
-      username,
+      email,
       password,
     });
 
@@ -26,13 +26,8 @@ export default function SignIn() {
   return (
     <form onSubmit={handleSubmit}>
       <div>
-        <label htmlFor="username">Username</label>
-        <input
-          id="username"
-          type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
+        <label htmlFor="username">Email</label>
+        <input id="email" type="text" value={email} onChange={(e) => setEmail(e.target.value)} />
       </div>
       <div>
         <label htmlFor="password">Password</label>

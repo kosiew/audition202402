@@ -6,7 +6,8 @@ import { useRequireAuth } from '@/hooks/useRequireAuth';
 import { Product } from '@/types/product';
 import { SortBy } from '@/types/sortBy';
 import { SortOrder } from '@/types/sortOrder';
-import { debounce } from '@mui/material';
+import { Button, debounce } from '@mui/material';
+import { signOut } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 
 const InventoryPage = () => {
@@ -68,6 +69,15 @@ const InventoryPage = () => {
     <div>
       <h1>Inventory</h1>
 
+      <Button
+        onClick={() =>
+          signOut().then(() => {
+            window.location.href = '/';
+          })
+        }
+      >
+        Sign Out
+      </Button>
       <SortFilterControls
         limit={limit}
         setLimit={setLimit}
