@@ -42,5 +42,8 @@ export default NextAuth({
       },
     }),
   ],
+  jwt: {
+    secret: process.env.NEXTAUTH_SECRET,
+  },
   // Additional NextAuth configuration...
 });
