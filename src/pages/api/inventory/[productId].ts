@@ -1,10 +1,15 @@
 // pages/api/inventory/[productId].ts
+import { authorize } from '@/pages/api/utils/auth';
 import { PrismaClient } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 const prisma = new PrismaClient();
+const permissionsRequired = [{ action: 'view', subject: 'Product' }];
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  const isAuthorized = await authorize(req, res, permissionsRequired);
+  if (!isAuthorized) return; // Response is already handled in the authorize function
+
   // Extract the productId from the URL query
   const { productId } = req.query;
 

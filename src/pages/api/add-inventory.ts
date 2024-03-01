@@ -1,10 +1,13 @@
 // pages/api/add-inventory.ts
+import { authorize } from '@/pages/api/utils/auth';
 import { PrismaClient } from '@prisma/client';
 import { v2 as cloudinary } from 'cloudinary';
 import { IncomingForm } from 'formidable';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 const prisma = new PrismaClient();
+
+const permissionsRequired = [{ action: 'create', subject: 'Product' }];
 
 const cloudinaryConfig = process.env.CLOUDINARY_CONFIG;
 if (!cloudinaryConfig) {
@@ -26,6 +29,9 @@ export const config = {
 };
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  const isAuthorized = await authorize(req, res, permissionsRequired);
+  if (!isAuthorized) return;
+
   if (req.method !== 'POST') {
     res.setHeader('Allow', ['POST']);
     return res.status(405).end(`Method ${req.method} Not Allowed`);

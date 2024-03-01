@@ -1,16 +1,17 @@
 // pages/api/users/[userId]/roles.ts
+import { authorize } from '@/pages/api/utils/auth';
 import { PrismaClient } from '@prisma/client';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { authorize } from '../../../../utils/auth';
 
 const prisma = new PrismaClient();
-
+const permissionsRequired = [{ action: 'update', subject: 'User' }];
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  const isAuthorized = await authorize(req, res, permissionsRequired);
+  if (!isAuthorized) return;
+
   const { userId } = req.query;
 
   try {
-    await authorize(req);
-
     if (req.method === 'POST') {
       const { roles } = req.body as { roles: number[] };
       const user = await prisma.user.update({

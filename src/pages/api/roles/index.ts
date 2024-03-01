@@ -1,14 +1,16 @@
 // pages/api/roles/index.ts
-import { authorize } from '@/utils/auth';
+import { authorize } from '@/pages/api/utils/auth';
 import { PrismaClient } from '@prisma/client';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 const prisma = new PrismaClient();
 
+const permissionsRequired = [{ action: 'create', subject: 'Role' }];
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  try {
-    await authorize(req);
+  const isAuthorized = await authorize(req, res, permissionsRequired);
+  if (!isAuthorized) return; // Response is already handled in the authorize function
 
+  try {
     if (req.method === 'POST') {
       const role = await prisma.role.create({
         data: req.body,

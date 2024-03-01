@@ -1,10 +1,14 @@
 // pages/api/populate.ts
+import { authorize } from '@/pages/api/utils/auth';
 import { PrismaClient } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 const prisma = new PrismaClient();
-
+const permissionsRequired = [{ action: 'create', subject: 'Product' }];
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  const isAuthorized = await authorize(req, res, permissionsRequired);
+  if (!isAuthorized) return;
+
   if (req.method === 'POST') {
     const { count, supplierId: supplierIdInput } = req.body;
 

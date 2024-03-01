@@ -1,4 +1,5 @@
 // pages/api/inventory/index.ts
+import { authorize } from '@/pages/api/utils/auth';
 import { SortBy } from '@/types/sortBy';
 import { SortOrder } from '@/types/sortOrder';
 import { PrismaClient } from '@prisma/client';
@@ -25,11 +26,15 @@ type ProductResponse = {
   page: number;
   totalPages: number;
 };
+const permissionsRequired = [{ action: 'view', subject: 'Product' }];
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ProductResponse | { error: string }>
 ) {
+  const isAuthorized = await authorize(req, res, permissionsRequired);
+  if (!isAuthorized) return; // Response is already handled in the authorize function
+
   const {
     page = '1',
     limit = '10',

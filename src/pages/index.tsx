@@ -6,7 +6,7 @@ const IndexPage = () => {
 
   useEffect(() => {
     router.replace('/inventory');
-  }, []);
+  }, [router]);
 
   return null;
 };
