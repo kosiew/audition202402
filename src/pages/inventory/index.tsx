@@ -2,6 +2,7 @@ import AddProductForm from '@/components/AddProductForm';
 import PaginationControl from '@/components/PaginationControl';
 import ProductTable from '@/components/ProductTable';
 import SortFilterControls from '@/components/SortFilterControls';
+import { useRequireAuth } from '@/hooks/useRequireAuth';
 import { Product } from '@/types/product';
 import { SortBy } from '@/types/sortBy';
 import { SortOrder } from '@/types/sortOrder';
@@ -9,6 +10,8 @@ import { debounce } from '@mui/material';
 import { useEffect, useState } from 'react';
 
 const InventoryPage = () => {
+  const session = useRequireAuth(); // This will redirect if not authenticated
+
   const [products, setProducts] = useState<Product[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1); // Add state for total pages
@@ -59,6 +62,7 @@ const InventoryPage = () => {
     filterProductName,
     filterSupplierName,
   ]); // Ensure effect runs when these values change
+  if (!session) return <div>Loading...</div>; // Or a loading spinner
 
   return (
     <div>
