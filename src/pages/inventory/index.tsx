@@ -66,7 +66,7 @@ const InventoryPage = () => {
   if (!session) return <div>Loading...</div>; // Or a loading spinner
 
   return (
-    <div>
+    <Box p={5}>
       <Grid container justifyContent="space-between" alignItems="center">
         <Grid item>
           <Typography variant="h4">Inventory Management System</Typography>
@@ -94,9 +94,12 @@ const InventoryPage = () => {
         />
       </Box>
       <ProductTable products={products} />
-      <PaginationControl page={page} totalPages={totalPages} onPageChange={setPage} />
+      <Box py={2}>
+        <PaginationControl page={page} totalPages={totalPages} onPageChange={setPage} />
+      </Box>
+      <Typography variant="h6">Add Product</Typography>
       <AddProductForm updateProducts={updateProducts} />
-    </div>
+    </Box>
   );
 };
 
