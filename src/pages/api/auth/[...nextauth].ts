@@ -34,8 +34,7 @@ export default NextAuth({
           if (!isValid) return null;
 
           // Return user object without password
-          const { id, name, email } = user;
-          return { id: String(id), name, email };
+          return { id: String(user.id), name: user.name, email: user.email };
         } catch (error) {
           console.error('Authentication error', error);
           return null;
