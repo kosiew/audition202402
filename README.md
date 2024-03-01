@@ -81,3 +81,9 @@ curl -X POST http://localhost:3000/api/add-inventory \
 -F "supplierName=New Supplier" \
 -F "file=@/Users/kosiew/Downloads/SCR-20240228-nrhf.png" \
 -H "Content-Type: multipart/form-data"
+
+
+### create role
+curl -X POST http://localhost:3000/api/roles \
+-H "Content-Type: application/json" \
+-d '{"name": "Admin", "description": "Administrator role with full access"}'
