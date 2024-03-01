@@ -89,7 +89,7 @@ curl -X POST http://localhost:3000/api/roles \
 -d '{"name": "Admin", "description": "Administrator role with full access"}'
 
 ### create permission
+
 curl -X POST http://localhost:3000/api/permissions \
 -H "Content-Type: application/json" \
 -d '{"action": "manage", "subject": "all"}'
-
