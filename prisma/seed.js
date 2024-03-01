@@ -19,10 +19,12 @@ async function main() {
   ];
 
   // create permissions
+
   await prisma.permission.createMany({
     data: productPermissionsData,
   });
 
+  const populateProductPermissionData = [{ action: 'populate', subject: 'Product' }];
   const userPermissionsData = [
     { action: 'create', subject: 'User' },
     { action: 'view', subject: 'User' },
@@ -44,13 +46,18 @@ async function main() {
     { action: 'delete', subject: 'Role' },
   ];
   // create permissions for rolePermissionsData, permissionPermissionsData, userPermissionsData,
-  [rolePermissionsData, userPermissionsData, permissionPermissionsData].forEach(async (data) => {
+  [
+    populateProductPermissionData,
+    rolePermissionsData,
+    userPermissionsData,
+    permissionPermissionsData,
+  ].forEach(async (data) => {
     await prisma.permission.createMany({
       data,
     });
   });
 
-  const nonProductPermissions = await prisma.permission.findMany({
+  const adminPermissions = await prisma.permission.findMany({
     where: {
       NOT: {
         OR: productPermissionsData.map(({ action, subject }) => ({
@@ -70,15 +77,6 @@ async function main() {
     },
   });
 
-  const userPermissions = await prisma.permission.findMany({
-    where: {
-      OR: userPermissionsData.map(({ action, subject }) => ({
-        action,
-        subject,
-      })),
-    },
-  });
-
   // create roles
   const adminRole = await prisma.role.create({
     data: {
@@ -86,7 +84,7 @@ async function main() {
       permissions: {
         connect: [
           ...productPermissions.map(({ id }) => ({ id })),
-          ...nonProductPermissions.map(({ id }) => ({ id })),
+          ...adminPermissions.map(({ id }) => ({ id })),
         ],
       },
     },
