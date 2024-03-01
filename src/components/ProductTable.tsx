@@ -10,11 +10,11 @@ import {
 } from '@mui/material';
 import React from 'react';
 
-interface ProductTableProps {
+interface Props {
   products: Product[];
 }
 
-const ProductTable: React.FC<ProductTableProps> = ({ products }) => (
+const ProductTable: React.FC<Props> = ({ products = [] }) => (
   <TableContainer component={Paper}>
     <Table aria-label="product table">
       <TableHead>
