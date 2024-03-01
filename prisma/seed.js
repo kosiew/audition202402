@@ -80,7 +80,7 @@ async function main() {
   // Add Users
   const emailVerified = new Date();
 
-  const hashedPasswordAdmin = await bcrypt.hash('admin123', 10);
+  const hashedPasswordAdmin = await bcrypt.hash('Xadmin123X', 10);
   const adminUser = await prisma.user.create({
     data: {
       name: 'Admin',
@@ -93,7 +93,7 @@ async function main() {
     },
   });
 
-  const hashedPasswordUser = await bcrypt.hash('user123', 10);
+  const hashedPasswordUser = await bcrypt.hash('Xuser123X', 10);
   const normalUser = await prisma.user.create({
     data: {
       name: 'User 1',
