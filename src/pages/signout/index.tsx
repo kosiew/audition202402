@@ -12,7 +12,7 @@ const SignOutPage: React.FC = () => {
         fullWidth
         variant="contained"
         color="primary"
-        onClick={() => signIn('credentials', { callbackUrl: '/inventory' })}
+        onClick={() => signIn('Credentials', { callbackUrl: '/inventory' })}
       >
         Sign In Again
       </Button>
