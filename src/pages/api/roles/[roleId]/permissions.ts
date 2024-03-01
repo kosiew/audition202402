@@ -1,17 +1,25 @@
-// pages/api/roles/index.ts
-import { authorize } from '@/utils/auth';
+// pages/api/roles/[roleId]/permissions.ts
 import { PrismaClient } from '@prisma/client';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { authorize } from '../../../../utils/auth';
 
 const prisma = new PrismaClient();
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  const { roleId } = req.query;
+
   try {
     await authorize(req);
 
     if (req.method === 'POST') {
-      const role = await prisma.role.create({
-        data: req.body,
+      const { permissions } = req.body as { permissions: number[] };
+      const role = await prisma.role.update({
+        where: { id: parseInt(roleId as string) },
+        data: {
+          permissions: {
+            connect: permissions.map((id) => ({ id })),
+          },
+        },
       });
       return res.status(200).json(role);
     } else {
