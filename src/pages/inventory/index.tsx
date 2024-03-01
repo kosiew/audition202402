@@ -7,7 +7,7 @@ import { useRequireAuth } from '@/hooks/useRequireAuth';
 import { Product } from '@/types/product';
 import { SortBy } from '@/types/sortBy';
 import { SortOrder } from '@/types/sortOrder';
-import { Grid, Typography, debounce } from '@mui/material';
+import { Box, Grid, Typography, debounce } from '@mui/material';
 import { useEffect, useState } from 'react';
 
 const InventoryPage = () => {
@@ -69,28 +69,30 @@ const InventoryPage = () => {
     <div>
       <Grid container justifyContent="space-between" alignItems="center">
         <Grid item>
-          <Typography variant="h4">Inventory</Typography>
+          <Typography variant="h4">Inventory Management System</Typography>
         </Grid>
         <Grid item>
           <SignOutButton />
         </Grid>
       </Grid>
-      <SortFilterControls
-        limit={limit}
-        setLimit={setLimit}
-        sortBy={sortBy}
-        setSortBy={setSortBy}
-        inStock={inStock}
-        setInStock={setInStock}
-        sortOrder={sortOrder}
-        setSortOrder={setSortOrder}
-        filterProductName={filterProductName}
-        setFilterProductName={setFilterProductName}
-        filterSupplierName={filterSupplierName}
-        setFilterSupplierName={setFilterSupplierName}
-        filterPriceRange={filterPriceRange}
-        setFilterPriceRange={setFilterPriceRange}
-      />
+      <Box pt={2}>
+        <SortFilterControls
+          limit={limit}
+          setLimit={setLimit}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
+          inStock={inStock}
+          setInStock={setInStock}
+          sortOrder={sortOrder}
+          setSortOrder={setSortOrder}
+          filterProductName={filterProductName}
+          setFilterProductName={setFilterProductName}
+          filterSupplierName={filterSupplierName}
+          setFilterSupplierName={setFilterSupplierName}
+          filterPriceRange={filterPriceRange}
+          setFilterPriceRange={setFilterPriceRange}
+        />
+      </Box>
       <ProductTable products={products} />
       <PaginationControl page={page} totalPages={totalPages} onPageChange={setPage} />
       <AddProductForm updateProducts={updateProducts} />
