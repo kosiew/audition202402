@@ -98,7 +98,9 @@ const AddProductForm: React.FC<Props> = ({ updateProducts }) => {
         {imageFile && <p>{imageFile.name}</p>} {/* Display selected file name */}
       </Box>
 
-      <Button onClick={handleAddProduct}>Add Product</Button>
+      <Button sx={{ mt: 2 }} variant="outlined" color="primary" onClick={handleAddProduct}>
+        Add Product
+      </Button>
     </div>
   );
 };
