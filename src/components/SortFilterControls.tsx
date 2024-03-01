@@ -9,6 +9,7 @@ import {
   MenuItem,
   Select,
   TextField,
+  Typography,
 } from '@mui/material';
 import React from 'react';
 
@@ -90,7 +91,7 @@ const SortFilterControls: React.FC<Props> = ({
       </FormControl>
 
       <section>
-        <h2>Filter</h2>
+        <Typography variant="h6">Filter</Typography>
         {/* filter controls as needed */}
         <TextField
           label="Product Name"
