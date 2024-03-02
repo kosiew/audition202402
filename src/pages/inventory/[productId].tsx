@@ -1,6 +1,6 @@
 // pages/inventory/[productId].tsx
 import { Product } from '@/types/product';
-import { Button, CircularProgress, Container, TextField, Typography } from '@mui/material';
+import { Box, Button, CircularProgress, Container, TextField, Typography } from '@mui/material';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -98,13 +98,11 @@ const ProductPage = () => {
         />
       ) : (
         product.imageUrl && (
-          <Image
-            src={product.imageUrl}
-            alt={product.name}
-            width={500} // replace with your desired width
-            height={500} // replace with your desired height
-            layout="responsive"
-          />
+          // ...
+
+          <Box sx={{ position: 'relative', width: '30%', height: 'auto', aspectRatio: '1/1' }}>
+            <Image src={product.imageUrl} alt={product.name} layout="fill" objectFit="cover" />
+          </Box>
         )
       )}
       {editing ? (
