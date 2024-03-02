@@ -18,18 +18,39 @@ interface Props {
   products: Product[];
   canEditProduct: boolean;
   canDeleteProduct: boolean;
+  updateProducts: () => void;
 }
 
-const ProductTable: React.FC<Props> = ({ products = [], canDeleteProduct, canEditProduct }) => {
+const ProductTable: React.FC<Props> = ({
+  products = [],
+  canDeleteProduct,
+  canEditProduct,
+  updateProducts,
+}) => {
   const router = useRouter();
 
   const handleEdit = (productId: number) => {
     router.push(`/inventory/${productId}`);
   };
 
-  const handleDelete = (productId: number) => {
-    // Delete the product here
-    // ...
+  const handleDelete = async (productId: number) => {
+    const confirmDelete = window.confirm('Are you sure you want to delete this product?');
+    if (!confirmDelete) return;
+
+    try {
+      const res = await fetch(`/api/delete-inventory?productId=${productId}`, {
+        method: 'DELETE',
+      });
+
+      if (!res.ok) {
+        throw new Error(res.statusText);
+      }
+
+      updateProducts(); // Refresh the product list here
+      // ...
+    } catch (error) {
+      console.error('Failed to delete product:', error);
+    }
   };
   return (
     <>

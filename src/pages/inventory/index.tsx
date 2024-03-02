@@ -110,6 +110,7 @@ const InventoryPage = () => {
         products={products}
         canEditProduct={canEditProduct}
         canDeleteProduct={canDeleteProduct}
+        updateProducts={updateProducts}
       />
       <Box py={2}>
         <PaginationControl page={page} totalPages={totalPages} onPageChange={setPage} />
