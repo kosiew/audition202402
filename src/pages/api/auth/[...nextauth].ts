@@ -11,7 +11,7 @@ export default NextAuth({
     CredentialsProvider({
       name: 'Credentials',
       credentials: {
-        email: { label: 'Email', type: 'text', placeholder: 'john@example.com' },
+        email: { label: 'Email', type: 'text', placeholder: 'guest1@example.com' },
         password: { label: 'Password', type: 'password' },
       },
       authorize: async (credentials) => {
@@ -42,8 +42,8 @@ export default NextAuth({
       },
     }),
   ],
+  // this fixes having to sign in twice
   jwt: {
     secret: process.env.NEXTAUTH_SECRET,
   },
-  // Additional NextAuth configuration...
 });

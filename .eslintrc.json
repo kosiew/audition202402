@@ -4,5 +4,13 @@
   "rules": {
     "prettier/prettier": ["error", {}, { "usePrettierrc": true }],
     "no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }]
-  }
+  },
+  "overrides": [
+    {
+      "files": ["*.d.ts"],
+      "rules": {
+        "no-unused-vars": "off"
+      }
+    }
+  ]
 }
