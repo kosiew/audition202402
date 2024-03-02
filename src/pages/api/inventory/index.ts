@@ -1,8 +1,9 @@
 // pages/api/inventory/index.ts
 import { authorize } from '@/pages/api/utils/auth';
+import { Product } from '@/types/product';
 import { SortBy } from '@/types/sortBy';
 import { SortOrder } from '@/types/sortOrder';
-import { PrismaClient } from '@prisma/client';
+import { Permission, PrismaClient } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 const prisma = new PrismaClient();
@@ -20,19 +21,20 @@ type QueryParams = {
   maxPrice?: string;
 };
 
-type ProductResponse = {
-  data: any[]; // Replace `any` with your Product type or interface
+type Response = {
+  data: Product[]; // Replace `any` with your Product type or interface
   total: number;
   page: number;
   totalPages: number;
+  filteredPermissions: Permission[];
 };
 export const permissionsRequired = [{ action: 'view', subject: 'Product' }];
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<ProductResponse | { error: string }>
+  res: NextApiResponse<Response | { error: string }>
 ) {
-  const { isAuthorized } = await authorize(req, res, permissionsRequired);
+  const { isAuthorized, filteredPermissions } = await authorize(req, res, permissionsRequired);
   if (!isAuthorized) return; // Response is already handled in the authorize function
 
   const {
@@ -95,6 +97,7 @@ export default async function handler(
     res.status(200).json({
       data: products,
       total,
+      filteredPermissions,
       page: pageNumber,
       totalPages: Math.ceil(total / limitNumber),
     });
