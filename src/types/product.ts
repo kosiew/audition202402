@@ -1,9 +1,5 @@
-import { Supplier } from '@prisma/client';
+import { Supplier, Product as _Product } from '@prisma/client';
 
-export type Product = {
-  id: number;
-  name: string;
-  price: number;
-  quantity: number;
+export type Product = _Product & {
   supplier: Supplier;
 };

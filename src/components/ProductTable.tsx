@@ -34,9 +34,15 @@ const ProductTable: React.FC<Props> = ({ products = [] }) => (
           {products.map((product) => (
             <TableRow key={product.id}>
               <TableCell component="th" scope="row">
-                {product.name}
+                {product.imageUrl.length > 0 ? (
+                  <a href={product.imageUrl} target="_blank" rel="noopener noreferrer">
+                    {product.name}
+                  </a>
+                ) : (
+                  product.name
+                )}
               </TableCell>
-              <TableCell align="right">{product.price}</TableCell>
+              <TableCell align="right">{product.price.toFixed(2)}</TableCell>
               <TableCell align="right">{product.quantity}</TableCell>
               <TableCell align="right">{product.supplier.name}</TableCell>
             </TableRow>
