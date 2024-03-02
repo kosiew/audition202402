@@ -1,10 +1,7 @@
 // pages/api/delete-inventory.ts
 import { authorize } from '@/pages/api/utils/auth';
-import { PrismaClient } from '@prisma/client';
+import prisma from '@/pages/api/utils/prisma';
 import type { NextApiRequest, NextApiResponse } from 'next';
-
-const prisma = new PrismaClient();
-
 export const permissionsRequired = [{ action: 'delete', subject: 'Product' }];
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {

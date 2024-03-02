@@ -1,12 +1,10 @@
 // pages/api/add-inventory.ts
 import { authorize } from '@/pages/api/utils/auth';
-import { PrismaClient } from '@prisma/client';
+import { getSupplier } from '@/pages/api/utils/getSupplier';
+import prisma from '@/pages/api/utils/prisma';
 import { v2 as cloudinary } from 'cloudinary';
 import { IncomingForm } from 'formidable';
 import type { NextApiRequest, NextApiResponse } from 'next';
-
-const prisma = new PrismaClient();
-
 export const permissionsRequired = [{ action: 'create', subject: 'Product' }];
 
 const cloudinaryConfig = process.env.CLOUDINARY_CONFIG;
@@ -66,17 +64,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     try {
-      // Logic to handle supplier and product creation
-      let supplier = await prisma.supplier.findUnique({
-        where: { name: supplierName },
-      });
-
-      if (!supplier) {
-        supplier = await prisma.supplier.create({
-          data: { name: supplierName },
-        });
-      }
-
+      const supplier = await getSupplier(supplierName);
       const product = await prisma.product.create({
         data: {
           name,

@@ -1,10 +1,10 @@
 // pages/api/inventory/[productId].ts
 import { authorize } from '@/pages/api/utils/auth';
 import { Product } from '@/types/product';
-import { Permission, PrismaClient } from '@prisma/client';
+import { Permission } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-const prisma = new PrismaClient();
+import prisma from '@/pages/api/utils/prisma';
 export const permissionsRequired = [{ action: 'view', subject: 'Product' }];
 type Response = {
   product: Product; // Replace `any` with your Product type or interface

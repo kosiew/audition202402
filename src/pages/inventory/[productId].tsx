@@ -1,7 +1,7 @@
 // pages/inventory/[productId].tsx
+import { getSupplier } from '@/pages/api/utils/getSupplier';
 import { Product } from '@/types/product';
 import { Box, Button, CircularProgress, Container, TextField, Typography } from '@mui/material';
-import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 const ProductPage = () => {
@@ -32,17 +32,53 @@ const ProductPage = () => {
   };
 
   const handleSave = async () => {
-    // Save the changes here
-    // ...
+    if (!product || !supplierName) return;
+    try {
+      const supplier = await getSupplier(supplierName);
+      const res = await fetch(`/api/update-inventory`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: productId,
+          type: 'product',
+          data: {
+            name: product.name,
+            price: product.price,
+            quantity: product.quantity,
+            supplierId: supplier.id,
+            imageUrl: product.imageUrl,
+          },
+        }),
+      });
 
-    setEditing(false);
+      if (!res.ok) {
+        throw new Error(res.statusText);
+      }
+
+      setEditing(false);
+    } catch (error) {
+      console.error('Failed to save product:', error);
+    }
   };
-
   const handleDelete = async () => {
-    // Delete the product here
-    // ...
+    const confirmDelete = window.confirm('Are you sure you want to delete this product?');
+    if (!confirmDelete) return;
 
-    router.push('/inventory');
+    try {
+      const res = await fetch(`/api/delete-inventory?productId=${productId}`, {
+        method: 'DELETE',
+      });
+
+      if (!res.ok) {
+        throw new Error(res.statusText);
+      }
+
+      router.push('/inventory');
+    } catch (error) {
+      console.error('Failed to delete product:', error);
+    }
   };
 
   if (loading) {
@@ -98,13 +134,11 @@ const ProductPage = () => {
         />
       ) : (
         product.imageUrl && (
-          // ...
-
-          <Box sx={{ position: 'relative', width: '30%', height: 'auto', aspectRatio: '1/1' }}>
-            <Image src={product.imageUrl} alt={product.name} layout="fill" objectFit="cover" />
-          </Box>
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={product.imageUrl} alt={product.name} style={{ width: '30%', height: 'auto' }} />
         )
       )}
+      <Box mt={2} />
       {editing ? (
         <Button color="primary" onClick={handleSave}>
           Save

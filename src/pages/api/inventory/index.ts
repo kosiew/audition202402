@@ -1,12 +1,11 @@
 // pages/api/inventory/index.ts
 import { authorize } from '@/pages/api/utils/auth';
+import prisma from '@/pages/api/utils/prisma';
 import { Product } from '@/types/product';
 import { SortBy } from '@/types/sortBy';
 import { SortOrder } from '@/types/sortOrder';
-import { Permission, PrismaClient } from '@prisma/client';
+import { Permission } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next';
-
-const prisma = new PrismaClient();
 
 type QueryParams = {
   page?: string;

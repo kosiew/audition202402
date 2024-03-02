@@ -1,10 +1,8 @@
 // pages/api/auth/[...nextauth].ts
-import { PrismaClient } from '@prisma/client';
+import prisma from '@/pages/api/utils/prisma';
 import bcrypt from 'bcryptjs';
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-
-const prisma = new PrismaClient();
 
 export default NextAuth({
   providers: [

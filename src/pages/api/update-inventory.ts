@@ -1,10 +1,8 @@
 // pages/api/update-inventory.ts
 import { authorize } from '@/pages/api/utils/auth';
-import { PrismaClient, Product, Supplier } from '@prisma/client';
+import prisma from '@/pages/api/utils/prisma';
+import { Product, Supplier } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next';
-
-const prisma = new PrismaClient();
-
 type Request = NextApiRequest & {
   body: {
     id: number;

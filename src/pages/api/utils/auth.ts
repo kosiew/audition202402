@@ -1,13 +1,11 @@
 import { PermissionRequired } from '@/types/permissionRequired';
 import { User } from '@/types/user';
-import { PrismaClient } from '@prisma/client';
 
 import { NextApiRequest, NextApiResponse } from 'next';
 import { Session } from 'next-auth';
 import { getSession } from 'next-auth/react';
 
-const prisma = new PrismaClient();
-
+import prisma from '@/pages/api/utils/prisma';
 export async function authorizeSession(
   session: Session,
   permissionsRequired: PermissionRequired[]

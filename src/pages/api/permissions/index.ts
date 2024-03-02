@@ -1,10 +1,8 @@
 // pages/api/permissions/index.ts
 import { authorize } from '@/pages/api/utils/auth';
-import { PrismaClient } from '@prisma/client';
 import { NextApiRequest, NextApiResponse } from 'next';
 
-const prisma = new PrismaClient();
-
+import prisma from '@/pages/api/utils/prisma';
 const permissionsRequired = [{ action: 'create', subject: 'Permission' }];
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { isAuthorized } = await authorize(req, res, permissionsRequired);
