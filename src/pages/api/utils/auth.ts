@@ -3,7 +3,6 @@ import { User } from '@/types/user';
 import { PrismaClient } from '@prisma/client';
 
 import { NextApiRequest, NextApiResponse } from 'next';
-import { Session } from 'next-auth';
 import { getSession } from 'next-auth/react';
 
 const prisma = new PrismaClient();
@@ -13,14 +12,7 @@ export async function authorize(
   res: NextApiResponse,
   permissionsRequired: PermissionRequired[]
 ) {
-  const session = await getSession({ req });
-
-  if (!session || !session.user) {
-    res.status(401).json({ message: 'You must be logged in to access this.' });
-    return false;
-  }
-
-  const user = await getSessionUser(session);
+  const user = await getSessionUser(req, res);
 
   if (!user) {
     res.status(404).json({ message: 'User not found.' });
@@ -46,7 +38,14 @@ export async function authorize(
   return true; // User is authenticated and has the required permissions
 }
 
-export async function getSessionUser(session: Session) {
+export async function getSessionUser(req: NextApiRequest, res: NextApiResponse) {
+  const session = await getSession({ req });
+
+  if (!session || !session.user) {
+    res.status(401).json({ message: 'You must be logged in to access this.' });
+    return false;
+  }
+
   const userEmail = session?.user?.email || '';
 
   if (userEmail) {
@@ -65,6 +64,11 @@ export async function getSessionUser(session: Session) {
         },
       },
     });
+    if (!user) {
+      res.status(404).json({ message: 'User not found.' });
+      return false;
+    }
+
     return user;
   }
   return null;
