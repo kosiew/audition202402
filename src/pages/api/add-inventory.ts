@@ -42,11 +42,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(500).json({ message: 'Form parsing error' });
     }
 
-    const name = fields.name?.[0];
+    const name = fields.name?.[0].trim();
     const price = fields.price?.[0];
     const quantity = fields.quantity?.[0];
-    const supplierName = fields.supplierName?.[0];
-
+    const supplierName = fields.supplierName?.[0].trim();
     // Ensure all fields are present
     if (!name || !price || !quantity || !supplierName) {
       return res.status(400).json({ message: 'Missing required fields' });
