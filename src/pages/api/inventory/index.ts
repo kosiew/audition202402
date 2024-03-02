@@ -26,7 +26,7 @@ type ProductResponse = {
   page: number;
   totalPages: number;
 };
-const permissionsRequired = [{ action: 'view', subject: 'Product' }];
+export const permissionsRequired = [{ action: 'view', subject: 'Product' }];
 
 export default async function handler(
   req: NextApiRequest,

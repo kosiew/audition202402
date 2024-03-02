@@ -5,7 +5,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 
 const prisma = new PrismaClient();
 
-const permissionsRequired = [{ action: 'delete', subject: 'Product' }];
+export const permissionsRequired = [{ action: 'delete', subject: 'Product' }];
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const isAuthorized = await authorize(req, res, permissionsRequired);

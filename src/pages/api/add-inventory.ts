@@ -7,7 +7,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 
 const prisma = new PrismaClient();
 
-const permissionsRequired = [{ action: 'create', subject: 'Product' }];
+export const permissionsRequired = [{ action: 'create', subject: 'Product' }];
 
 const cloudinaryConfig = process.env.CLOUDINARY_CONFIG;
 if (!cloudinaryConfig) {

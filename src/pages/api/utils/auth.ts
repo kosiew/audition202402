@@ -3,6 +3,7 @@ import { User } from '@/types/user';
 import { PrismaClient } from '@prisma/client';
 
 import { NextApiRequest, NextApiResponse } from 'next';
+import { Session } from 'next-auth';
 import { getSession } from 'next-auth/react';
 
 const prisma = new PrismaClient();
@@ -12,7 +13,7 @@ export async function authorize(
   res: NextApiResponse,
   permissionsRequired: PermissionRequired[]
 ) {
-  const user = await getSessionUser(req, res);
+  const user = await getRequestUser(req, res);
 
   if (!user) {
     res.status(404).json({ message: 'User not found.' });
@@ -38,7 +39,7 @@ export async function authorize(
   return true; // User is authenticated and has the required permissions
 }
 
-export async function getSessionUser(req: NextApiRequest, res: NextApiResponse) {
+export async function getRequestUser(req: NextApiRequest, res: NextApiResponse) {
   const session = await getSession({ req });
 
   if (!session || !session.user) {
@@ -46,37 +47,50 @@ export async function getSessionUser(req: NextApiRequest, res: NextApiResponse) 
     return false;
   }
 
-  const userEmail = session?.user?.email || '';
+  const user = getSessionUser(session);
+  if (!user) {
+    res.status(404).json({ message: 'User not found.' });
+  }
 
-  if (userEmail) {
-    const user = await prisma.user.findUnique({
-      where: { email: userEmail },
-      include: {
-        excludedPermissions: {
-          include: {
-            permission: true,
-          },
-        },
-        excludedRoles: {
-          include: {
-            role: true,
-          },
-        },
-        roles: {
-          include: {
-            permissions: true,
-          },
+  return user;
+}
+
+export async function getSessionPermissions(session: Session) {
+  const user = await getSessionUser(session);
+  if (!user) {
+    return [];
+  }
+
+  return getUserPermissions(user);
+}
+
+export async function getSessionUser(session: Session) {
+  const userEmail = session?.user?.email || '';
+  if (!userEmail) {
+    return null;
+  }
+
+  const user = await prisma.user.findUnique({
+    where: { email: userEmail },
+    include: {
+      excludedPermissions: {
+        include: {
+          permission: true,
         },
       },
-    });
-    if (!user) {
-      res.status(404).json({ message: 'User not found.' });
-      return false;
-    }
-
-    return user;
-  }
-  return null;
+      excludedRoles: {
+        include: {
+          role: true,
+        },
+      },
+      roles: {
+        include: {
+          permissions: true,
+        },
+      },
+    },
+  });
+  return user;
 }
 
 export function getUserRoles(user: User) {

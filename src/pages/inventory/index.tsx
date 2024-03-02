@@ -10,6 +10,7 @@ import { SortOrder } from '@/types/sortOrder';
 import { Box, Grid, Typography, debounce } from '@mui/material';
 import { useEffect, useState } from 'react';
 
+
 const InventoryPage = () => {
   const session = useRequireAuth(); // This will redirect if not authenticated
 
