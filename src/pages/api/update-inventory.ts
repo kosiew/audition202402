@@ -1,13 +1,16 @@
 // pages/api/update-inventory.ts
 import { authorize } from '@/pages/api/utils/auth';
+import { getSupplier } from '@/pages/api/utils/getSupplier';
 import prisma from '@/pages/api/utils/prisma';
 import { Product, Supplier } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next';
+
+type ProductWithSupplierName = Product & { supplierName?: string };
 type Request = NextApiRequest & {
   body: {
     id: number;
     type: string;
-    data: Product | Supplier;
+    data: ProductWithSupplierName | Supplier;
   };
 };
 export const permissionsRequired = [{ action: 'update', subject: 'Product' }];
@@ -27,9 +30,14 @@ export default async function handler(req: Request, res: NextApiResponse) {
       let result;
 
       if (type === 'product') {
+        const { supplierName, ...dataWithoutSupplierName } = data;
+        if (supplierName) {
+          const supplier = await getSupplier(data.supplierName);
+          dataWithoutSupplierName.supplierId = supplier.id;
+        }
         result = await prisma.product.update({
           where: { id: parseInt(id, 10) },
-          data,
+          data: dataWithoutSupplierName,
         });
       } else if (type === 'supplier') {
         result = await prisma.supplier.update({

@@ -1,5 +1,4 @@
 // pages/inventory/[productId].tsx
-import { getSupplier } from '@/pages/api/utils/getSupplier';
 import { Product } from '@/types/product';
 import { Box, Button, CircularProgress, Container, TextField, Typography } from '@mui/material';
 import { useRouter } from 'next/router';
@@ -34,7 +33,6 @@ const ProductPage = () => {
   const handleSave = async () => {
     if (!product || !supplierName) return;
     try {
-      const supplier = await getSupplier(supplierName);
       const res = await fetch(`/api/update-inventory`, {
         method: 'POST',
         headers: {
@@ -47,7 +45,7 @@ const ProductPage = () => {
             name: product.name,
             price: product.price,
             quantity: product.quantity,
-            supplierId: supplier.id,
+            supplierName: supplierName,
             imageUrl: product.imageUrl,
           },
         }),
