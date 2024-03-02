@@ -46,11 +46,6 @@ const SortFilterControls: React.FC<Props> = ({
   filterPriceRange,
   setFilterPriceRange,
 }) => {
-  console.log(
-    `%c👀  ==> [] 👀`,
-    'background-color: #0595DE; color: yellow; padding: 8px; border-radius: 4px;',
-    { filterPriceRange }
-  );
   const clearFilters = () => {
     setFilterProductName('');
     setFilterSupplierName('');
