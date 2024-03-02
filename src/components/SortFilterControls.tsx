@@ -46,6 +46,11 @@ const SortFilterControls: React.FC<Props> = ({
   filterPriceRange,
   setFilterPriceRange,
 }) => {
+  console.log(
+    `%c👀  ==> [] 👀`,
+    'background-color: #0595DE; color: yellow; padding: 8px; border-radius: 4px;',
+    { filterPriceRange }
+  );
   const clearFilters = () => {
     setFilterProductName('');
     setFilterSupplierName('');
@@ -116,9 +121,12 @@ const SortFilterControls: React.FC<Props> = ({
         />
         <TextField
           label="Maximum Price"
-          type="number"
-          value={filterPriceRange[1]}
-          onChange={(e) => setFilterPriceRange([filterPriceRange[0], Number(e.target.value)])}
+          type={filterPriceRange[1] === Infinity ? 'text' : 'number'}
+          value={filterPriceRange[1] === Infinity ? 'Max' : filterPriceRange[1]}
+          onChange={(e) => {
+            const value = e.target.value === 'Max' ? Infinity : Number(e.target.value);
+            setFilterPriceRange([filterPriceRange[0], value]);
+          }}
         />
 
         <FormControlLabel
