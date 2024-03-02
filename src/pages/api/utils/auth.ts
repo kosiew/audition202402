@@ -1,4 +1,4 @@
-import { Permission } from '@/types/permission';
+import { PermissionRequired } from '@/types/permissionRequired';
 import { User } from '@/types/user';
 import { PrismaClient } from '@prisma/client';
 
@@ -10,7 +10,7 @@ const prisma = new PrismaClient();
 export async function authorize(
   req: NextApiRequest,
   res: NextApiResponse,
-  permissionsRequired: Permission[]
+  permissionsRequired: PermissionRequired[]
 ) {
   const session = await getSession({ req });
 
@@ -25,6 +25,11 @@ export async function authorize(
   const user: User | null = await prisma.user.findUnique({
     where: { email: userEmail },
     include: {
+      excludedPermissions: {
+        include: {
+          permission: true,
+        },
+      },
       roles: {
         include: {
           permissions: true,
@@ -38,7 +43,15 @@ export async function authorize(
     return false;
   }
 
-  const userPermissions = user.roles.flatMap((role) => role.permissions);
+  const userPermissions =
+    user?.roles
+      .flatMap((role) => role.permissions)
+      .filter(
+        (permission) =>
+          !user?.excludedPermissions.some(
+            (excludedPermission) => excludedPermission.permissionId === permission.id
+          )
+      ) || [];
   const hasPermission = permissionsRequired.every((requiredPermission) =>
     userPermissions.some(
       (userPermission) =>

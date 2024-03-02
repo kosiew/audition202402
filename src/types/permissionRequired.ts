@@ -1,3 +1,3 @@
 import { Permission as _Permission } from '@prisma/client';
 
-export type Permission = Omit<_Permission, 'id'>;
+export type PermissionRequired = Omit<_Permission, 'id'>;
