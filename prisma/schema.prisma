@@ -32,13 +32,13 @@ model Supplier {
 }
 
 model User {
-  id                     Int                      @id @default(autoincrement())
-  name                   String?
-  email                  String                   @unique
-  emailVerified          DateTime?
-  password               String
-  roles                  Role[]
-  UserExcludedPermission UserExcludedPermission[]
+  id                  Int                      @id @default(autoincrement())
+  name                String?
+  email               String                   @unique
+  emailVerified       DateTime?
+  password            String
+  roles               Role[]
+  excludedPermissions UserExcludedPermission[]
 }
 
 model Role {
