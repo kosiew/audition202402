@@ -91,7 +91,9 @@ const SortFilterControls: React.FC<Props> = ({
       </FormControl>
 
       <section>
-        <Typography variant="h6">Filter</Typography>
+        <Typography variant="h6" py={1}>
+          Filter
+        </Typography>
         {/* filter controls as needed */}
         <TextField
           label="Product Name"
