@@ -55,40 +55,42 @@ const SortFilterControls: React.FC<Props> = ({
 
   return (
     <>
-      <FormControl variant="outlined" sx={{ m: 1, minWidth: 120 }}>
-        <InputLabel>Items per Page</InputLabel>
-        <Select value={limit} onChange={(e) => setLimit(e.target.value)} label="Items per Page">
-          <MenuItem value="5">5</MenuItem>
-          <MenuItem value="10">10</MenuItem>
-          <MenuItem value="20">20</MenuItem>
-          <MenuItem value="50">50</MenuItem>
-        </Select>
-      </FormControl>
+      <section>
+        <FormControl variant="outlined" sx={{ m: 1, minWidth: 120 }}>
+          <InputLabel>Items per Page</InputLabel>
+          <Select value={limit} onChange={(e) => setLimit(e.target.value)} label="Items per Page">
+            <MenuItem value="5">5</MenuItem>
+            <MenuItem value="10">10</MenuItem>
+            <MenuItem value="20">20</MenuItem>
+            <MenuItem value="50">50</MenuItem>
+          </Select>
+        </FormControl>
 
-      <FormControl variant="outlined" sx={{ m: 1, minWidth: 120 }}>
-        <InputLabel>Sort By</InputLabel>
-        <Select
-          value={sortBy}
-          onChange={(e) => setSortBy(e.target.value as SortBy)}
-          label="Sort By"
-        >
-          <MenuItem value="name">Name</MenuItem>
-          <MenuItem value="price">Price</MenuItem>
-          <MenuItem value="quantity">Quantity</MenuItem>
-        </Select>
-      </FormControl>
+        <FormControl variant="outlined" sx={{ m: 1, minWidth: 120 }}>
+          <InputLabel>Sort By</InputLabel>
+          <Select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value as SortBy)}
+            label="Sort By"
+          >
+            <MenuItem value="name">Name</MenuItem>
+            <MenuItem value="price">Price</MenuItem>
+            <MenuItem value="quantity">Quantity</MenuItem>
+          </Select>
+        </FormControl>
 
-      <FormControl variant="outlined" sx={{ m: 1, minWidth: 120 }}>
-        <InputLabel>Sort Order</InputLabel>
-        <Select
-          value={sortOrder}
-          onChange={(e) => setSortOrder(e.target.value as SortOrder)} // Cast to SortOrder type
-          label="Sort Order"
-        >
-          <MenuItem value="asc">Ascending</MenuItem>
-          <MenuItem value="desc">Descending</MenuItem>
-        </Select>
-      </FormControl>
+        <FormControl variant="outlined" sx={{ m: 1, minWidth: 120 }}>
+          <InputLabel>Sort Order</InputLabel>
+          <Select
+            value={sortOrder}
+            onChange={(e) => setSortOrder(e.target.value as SortOrder)} // Cast to SortOrder type
+            label="Sort Order"
+          >
+            <MenuItem value="asc">Ascending</MenuItem>
+            <MenuItem value="desc">Descending</MenuItem>
+          </Select>
+        </FormControl>
+      </section>
 
       <section>
         <Typography variant="h6" py={1}>
