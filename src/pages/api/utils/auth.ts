@@ -8,6 +8,21 @@ import { getSession } from 'next-auth/react';
 
 const prisma = new PrismaClient();
 
+export async function authorizeSession(
+  session: Session,
+  permissionsRequired: PermissionRequired[]
+) {
+  const { filteredPermissions } = await getSessionPermissions(session);
+  const hasPermission = permissionsRequired.every((requiredPermission) =>
+    filteredPermissions.some(
+      (permission) =>
+        permission.action === requiredPermission.action &&
+        permission.subject === requiredPermission.subject
+    )
+  );
+  return hasPermission;
+}
+
 export async function authorize(
   req: NextApiRequest,
   res: NextApiResponse,
@@ -55,10 +70,14 @@ export async function getRequestUser(req: NextApiRequest, res: NextApiResponse) 
   return user;
 }
 
-export async function getSessionPermissions(session: Session) {
+export async function getSessionPermissions(session: Session | null) {
+  const noPermissions = { rolePermissions: [], filteredPermissions: [] };
+  if (!session) {
+    return noPermissions;
+  }
   const user = await getSessionUser(session);
   if (!user) {
-    return [];
+    return noPermissions;
   }
 
   return getUserPermissions(user);

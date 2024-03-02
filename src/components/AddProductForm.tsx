@@ -1,4 +1,4 @@
-import { Box, Button, TextField } from '@mui/material';
+import { Box, Button, Dialog, DialogActions, DialogTitle, TextField } from '@mui/material';
 import { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 
@@ -12,12 +12,27 @@ const AddProductForm: React.FC<Props> = ({ updateProducts }) => {
   const [price, setPrice] = useState('');
   const [quantity, setQuantity] = useState('');
   const [supplierName, setSupplierName] = useState(''); // New state for supplier name
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [open, setOpen] = useState(false);
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     setImageFile(acceptedFiles[0]);
   }, []);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+  const clearForm = () => {
+    setName('');
+    setPrice('');
+    setQuantity('');
+    setSupplierName('');
+    setImageFile(null);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setErrorMessage(null);
+    clearForm();
+  };
 
   const handleAddProduct = async () => {
     // Check if all form inputs have values before submitting
@@ -55,14 +70,13 @@ const AddProductForm: React.FC<Props> = ({ updateProducts }) => {
       updateProducts(); // Trigger a state update to refresh the product list
 
       // Optionally, clear the form fields and update the UI accordingly
-      setName('');
-      setPrice('');
-      setQuantity('');
-      setSupplierName('');
-      setImageFile(null);
+      clearForm();
       // Additional logic like closing a modal or showing a success message
     } catch (error) {
-      console.error('Failed to add product:', error);
+      const errorMessage = 'Failed to add product';
+      console.error(errorMessage, error);
+      setErrorMessage(errorMessage);
+      setOpen(true);
       // Handle errors like showing an error message to the user
     }
   };
@@ -77,7 +91,6 @@ const AddProductForm: React.FC<Props> = ({ updateProducts }) => {
         value={supplierName}
         onChange={(e) => setSupplierName(e.target.value)}
       />
-
       {/* Drag and Drop File Input */}
       <Box
         {...getRootProps()}
@@ -97,7 +110,14 @@ const AddProductForm: React.FC<Props> = ({ updateProducts }) => {
         )}
         {imageFile && <p>{imageFile.name}</p>} {/* Display selected file name */}
       </Box>
-
+      <Dialog open={!!errorMessage || open} onClose={handleClose}>
+        <DialogTitle>{errorMessage}</DialogTitle>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>{' '}
       <Button sx={{ mt: 2 }} variant="outlined" color="primary" onClick={handleAddProduct}>
         Add Product
       </Button>
