@@ -101,6 +101,15 @@ async function main() {
     },
   });
 
+  const userRole = await prisma.role.create({
+    data: {
+      name: 'User',
+      permissions: {
+        connect: productPermissions.map(({ id }) => ({ id })),
+      },
+    },
+  });
+
   // Add Users
   const emailVerified = new Date();
 
@@ -123,6 +132,19 @@ async function main() {
       name: 'User 1',
       email: 'user1@example.com',
       password: hashedPasswordUser,
+      emailVerified,
+      roles: {
+        connect: [{ id: userRole.id }],
+      },
+    },
+  });
+
+  const hashedPasswordGuest = await bcrypt.hash('Xguest123X', 10);
+  const guest = await prisma.user.create({
+    data: {
+      name: 'Guest 1',
+      email: 'guest1@example.com',
+      password: hashedPasswordGuest,
       emailVerified,
       roles: {
         connect: [{ id: guestRole.id }],
