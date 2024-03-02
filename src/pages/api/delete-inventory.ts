@@ -8,7 +8,7 @@ const prisma = new PrismaClient();
 export const permissionsRequired = [{ action: 'delete', subject: 'Product' }];
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const isAuthorized = await authorize(req, res, permissionsRequired);
+  const { isAuthorized } = await authorize(req, res, permissionsRequired);
   if (!isAuthorized) return;
 
   if (req.method === 'DELETE') {

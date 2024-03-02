@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
 export const permissionsRequired = [{ action: 'view', subject: 'Product' }];
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const isAuthorized = await authorize(req, res, permissionsRequired);
+  const { isAuthorized } = await authorize(req, res, permissionsRequired);
   if (!isAuthorized) return; // Response is already handled in the authorize function
 
   // Extract the productId from the URL query

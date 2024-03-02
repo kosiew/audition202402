@@ -29,8 +29,8 @@ export const config = {
 };
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const isAuthorized = await authorize(req, res, permissionsRequired);
-  if (!isAuthorized) return res.status(401).end();
+  const { isAuthorized } = await authorize(req, res, permissionsRequired);
+  if (!isAuthorized) return;
   if (req.method !== 'POST') {
     res.setHeader('Allow', ['POST']);
     return res.status(405).end(`Method ${req.method} Not Allowed`);

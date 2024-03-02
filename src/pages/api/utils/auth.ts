@@ -32,7 +32,7 @@ export async function authorize(
 
   if (!user) {
     res.status(404).json({ message: 'User not found.' });
-    return false;
+    return { isAuthorized: false, filteredPermissions: [] };
   }
 
   // user Roles' permissions, after excluding the excludedPermissions
@@ -45,13 +45,14 @@ export async function authorize(
         permission.subject === requiredPermission.subject
     )
   );
+  const result = { filteredPermissions };
 
   if (!hasPermission) {
     res.status(403).json({ message: 'You do not have permission to access this.' });
-    return false;
+    return { ...result, isAuthorized: false };
   }
 
-  return true; // User is authenticated and has the required permissions
+  return { ...result, isAuthorized: true }; // User is authenticated and has the required permissions
 }
 
 export async function getRequestUser(req: NextApiRequest, res: NextApiResponse) {

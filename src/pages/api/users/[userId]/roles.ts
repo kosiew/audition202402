@@ -6,7 +6,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 const prisma = new PrismaClient();
 const permissionsRequired = [{ action: 'update', subject: 'User' }];
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const isAuthorized = await authorize(req, res, permissionsRequired);
+  const { isAuthorized } = await authorize(req, res, permissionsRequired);
   if (!isAuthorized) return;
 
   const { userId } = req.query;

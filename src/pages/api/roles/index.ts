@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
 
 const permissionsRequired = [{ action: 'create', subject: 'Role' }];
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const isAuthorized = await authorize(req, res, permissionsRequired);
+  const { isAuthorized } = await authorize(req, res, permissionsRequired);
   if (!isAuthorized) return; // Response is already handled in the authorize function
 
   try {
