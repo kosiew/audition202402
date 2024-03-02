@@ -32,12 +32,13 @@ model Supplier {
 }
 
 model User {
-  id            Int       @id @default(autoincrement())
-  name          String?
-  email         String    @unique
-  emailVerified DateTime?
-  password      String
-  roles         Role[]
+  id                     Int                      @id @default(autoincrement())
+  name                   String?
+  email                  String                   @unique
+  emailVerified          DateTime?
+  password               String
+  roles                  Role[]
+  UserExcludedPermission UserExcludedPermission[]
 }
 
 model Role {
@@ -48,11 +49,22 @@ model Role {
   users       User[]
 }
 
+model UserExcludedPermission {
+  id           Int        @id @default(autoincrement())
+  userId       Int
+  permissionId Int
+  user         User       @relation(fields: [userId], references: [id])
+  permission   Permission @relation(fields: [permissionId], references: [id])
+
+  @@unique([userId, permissionId])
+}
+
 model Permission {
-  id      Int    @id @default(autoincrement())
-  action  String
-  subject String
-  roles   Role[]
+  id                     Int                      @id @default(autoincrement())
+  action                 String
+  subject                String
+  roles                  Role[]
+  UserExcludedPermission UserExcludedPermission[]
 
   @@unique([action, subject])
 }
