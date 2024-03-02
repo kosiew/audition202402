@@ -1,6 +1,7 @@
 // pages/api/inventory/[productId].ts
 import { authorize } from '@/pages/api/utils/auth';
-import { Permission, PrismaClient, Product } from '@prisma/client';
+import { Product } from '@/types/product';
+import { Permission, PrismaClient } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 const prisma = new PrismaClient();
@@ -31,6 +32,9 @@ export default async function handler(
     const product = await prisma.product.findUnique({
       where: {
         id: productIdNumber,
+      },
+      include: {
+        supplier: true,
       },
     });
 

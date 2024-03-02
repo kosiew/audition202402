@@ -22,7 +22,7 @@ type QueryParams = {
 };
 
 type Response = {
-  data: Product[]; // Replace `any` with your Product type or interface
+  products: Product[]; // Replace `any` with your Product type or interface
   total: number;
   page: number;
   totalPages: number;
@@ -95,7 +95,7 @@ export default async function handler(
     });
 
     res.status(200).json({
-      data: products,
+      products,
       total,
       filteredPermissions,
       page: pageNumber,

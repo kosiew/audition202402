@@ -45,7 +45,7 @@ const InventoryPage = () => {
       const response = await fetch(`/api/inventory?${queryParams}`);
       const data = await response.json();
 
-      setProducts(data.data);
+      setProducts(data.products);
       setTotalPages(data.totalPages);
     };
 
