@@ -1,4 +1,12 @@
-import { Box, Button, Dialog, DialogActions, DialogTitle, TextField } from '@mui/material';
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogTitle,
+  TextField,
+  Typography,
+} from '@mui/material';
 import { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 
@@ -83,6 +91,7 @@ const AddProductForm: React.FC<Props> = ({ updateProducts }) => {
 
   return (
     <div>
+      <Typography variant="h6">Add Product</Typography>
       <TextField label="Name" value={name} onChange={(e) => setName(e.target.value)} />
       <TextField label="Price" value={price} onChange={(e) => setPrice(e.target.value)} />
       <TextField label="Quantity" value={quantity} onChange={(e) => setQuantity(e.target.value)} />

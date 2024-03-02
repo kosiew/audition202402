@@ -8,7 +8,12 @@ import { Product } from '@/types/product';
 import { SortBy } from '@/types/sortBy';
 import { SortOrder } from '@/types/sortOrder';
 import { Box, Grid, Typography, debounce } from '@mui/material';
+import { Permission } from '@prisma/client';
 import { useEffect, useState } from 'react';
+
+const addProductPermission = { action: 'create', subject: 'Product' };
+const editProductPermission = { action: 'update', subject: 'Product' };
+const deleteProductPermission = { action: 'delete', subject: 'Product' };
 
 const InventoryPage = () => {
   const session = useRequireAuth(); // This will redirect if not authenticated
@@ -24,7 +29,7 @@ const InventoryPage = () => {
   const [filterProductName, setFilterProductName] = useState('');
   const [filterSupplierName, setFilterSupplierName] = useState('');
   const [filterPriceRange, setFilterPriceRange] = useState<[number, number]>([0, Infinity]);
-
+  const [filteredPermissions, setFilteredPermissions] = useState<Permission[]>([]);
   // To trigger a state change, increment the counter
   const updateProducts = () => setTrigger((trigger) => trigger + 1);
 
@@ -43,10 +48,11 @@ const InventoryPage = () => {
       }).toString();
 
       const response = await fetch(`/api/inventory?${queryParams}`);
-      const data = await response.json();
+      const { totalPages, products, filteredPermissions } = await response.json();
 
-      setProducts(data.products);
-      setTotalPages(data.totalPages);
+      setProducts(products);
+      setTotalPages(totalPages);
+      setFilteredPermissions(filteredPermissions);
     };
 
     // debounce the fetchProducts function to prevent rapid API calls
@@ -63,6 +69,13 @@ const InventoryPage = () => {
     filterProductName,
     filterSupplierName,
   ]); // Ensure effect runs when these values change
+
+  const canAddProduct = filteredPermissions.some((p) => p.action === addProductPermission.action);
+  const canEditProduct = filteredPermissions.some((p) => p.action === editProductPermission.action);
+  const canDeleteProduct = filteredPermissions.some(
+    (p) => p.action === deleteProductPermission.action
+  );
+
   if (!session) return <div>Loading...</div>; // Or a loading spinner
 
   return (
@@ -93,12 +106,15 @@ const InventoryPage = () => {
           setFilterPriceRange={setFilterPriceRange}
         />
       </Box>
-      <ProductTable products={products} />
+      <ProductTable
+        products={products}
+        canEditProduct={canEditProduct}
+        canDeleteProduct={canDeleteProduct}
+      />
       <Box py={2}>
         <PaginationControl page={page} totalPages={totalPages} onPageChange={setPage} />
       </Box>
-      <Typography variant="h6">Add Product</Typography>
-      <AddProductForm updateProducts={updateProducts} />
+      {canAddProduct && <AddProductForm updateProducts={updateProducts} />}
     </Box>
   );
 };
