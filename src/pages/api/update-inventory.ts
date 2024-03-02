@@ -1,11 +1,19 @@
 // pages/api/update-inventory.ts
 import { authorize } from '@/pages/api/utils/auth';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Product, Supplier } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 const prisma = new PrismaClient();
+
+type Request = NextApiRequest & {
+  body: {
+    id: number;
+    type: string;
+    data: Product | Supplier;
+  };
+};
 export const permissionsRequired = [{ action: 'update', subject: 'Product' }];
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(req: Request, res: NextApiResponse) {
   const { isAuthorized } = await authorize(req, res, permissionsRequired);
   if (!isAuthorized) return;
 
