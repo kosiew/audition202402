@@ -38,15 +38,9 @@ model User {
   emailVerified       DateTime?
   password            String
   roles               Role[]
+  permission          Permission[]
+  excludedRoles       UserExcludedRole[]
   excludedPermissions UserExcludedPermission[]
-}
-
-model Role {
-  id          Int          @id @default(autoincrement())
-  name        String       @unique
-  description String?
-  permissions Permission[]
-  users       User[]
 }
 
 model UserExcludedPermission {
@@ -59,11 +53,32 @@ model UserExcludedPermission {
   @@unique([userId, permissionId])
 }
 
+model UserExcludedRole {
+  id     Int  @id @default(autoincrement())
+  userId Int
+  roleId Int
+  user   User @relation(fields: [userId], references: [id])
+  role   Role @relation(fields: [roleId], references: [id])
+
+  @@unique([userId, roleId])
+}
+
+model Role {
+  id               Int                @id @default(autoincrement())
+  name             String             @unique
+  description      String?
+  permissions      Permission[]
+  users            User[]
+  UserExcludedRole UserExcludedRole[]
+}
+
 model Permission {
   id                     Int                      @id @default(autoincrement())
   action                 String
   subject                String
   roles                  Role[]
+  User                   User?                    @relation(fields: [userId], references: [id])
+  userId                 Int?
   UserExcludedPermission UserExcludedPermission[]
 
   @@unique([action, subject])

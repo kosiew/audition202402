@@ -57,6 +57,11 @@ export async function getSessionUser(req: NextApiRequest, res: NextApiResponse) 
             permission: true,
           },
         },
+        excludedRoles: {
+          include: {
+            role: true,
+          },
+        },
         roles: {
           include: {
             permissions: true,
@@ -74,8 +79,19 @@ export async function getSessionUser(req: NextApiRequest, res: NextApiResponse) 
   return null;
 }
 
+export function getUserRoles(user: User) {
+  const roles = user.roles;
+  const filteredRoles = roles.filter(
+    (role) => !user.excludedRoles.some((excludedRole) => excludedRole.roleId === role.id)
+  );
+
+  return { roles, filteredRoles };
+}
+
 export function getUserPermissions(user: User) {
-  const rolePermissions = user.roles.flatMap((role) => role.permissions);
+  const { filteredRoles } = getUserRoles(user);
+
+  const rolePermissions = filteredRoles.flatMap((role) => role.permissions);
   const filteredPermissions =
     rolePermissions.filter(
       (permission) =>
@@ -84,5 +100,5 @@ export function getUserPermissions(user: User) {
         )
     ) || [];
 
-  return { allPermissions: rolePermissions, filteredPermissions };
+  return { rolePermissions, filteredPermissions };
 }
