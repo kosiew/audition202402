@@ -15,16 +15,8 @@ type Request = NextApiRequest & {
 };
 export const permissionsRequired = [{ action: 'update', subject: 'Product' }];
 export default async function handler(req: Request, res: NextApiResponse) {
-  console.log(
-    `%c==> [api-update handler]`,
-    'background-color: #0595DE; color: yellow; padding: 8px; border-radius: 4px;'
-  );
   const { isAuthorized } = await authorize(req, res, permissionsRequired);
   if (!isAuthorized) return;
-  console.log(
-    `%c==> [api update authorized]`,
-    'background-color: #0595DE; color: yellow; padding: 8px; border-radius: 4px;'
-  );
 
   if (req.method === 'POST') {
     const { id, type, data } = req.body;
@@ -38,10 +30,6 @@ export default async function handler(req: Request, res: NextApiResponse) {
       let result;
 
       if (type === 'product') {
-        console.log(
-          `%c==> [api-update product]`,
-          'background-color: #0595DE; color: yellow; padding: 8px; border-radius: 4px;'
-        );
         const { supplierName, ...dataWithoutSupplierName } = data;
         if (supplierName) {
           const supplier = await getSupplier(data.supplierName);
