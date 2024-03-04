@@ -46,11 +46,12 @@ const ProductPage = () => {
   const handleSave = async () => {
     if (!product || !product.supplierName) return;
     try {
-      const res = await fetch(`/api/update-inventory2`, {
+      const res = await fetch(`/api/update-inventory`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify({
           id: productId,
           type: 'product',
