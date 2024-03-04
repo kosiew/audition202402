@@ -1,9 +1,12 @@
 // pages/inventory/[productId].tsx
+import Header from '@/components/Header';
+import { useRequireAuth } from '@/hooks/useRequireAuth';
 import { Product } from '@/types/product';
 import { Box, Button, CircularProgress, Container, TextField, Typography } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 const ProductPage = () => {
+  const session = useRequireAuth(); // This will redirect if not authenticated
   const router = useRouter();
   const { productId } = router.query;
 
@@ -88,6 +91,7 @@ const ProductPage = () => {
   }
   return (
     <Container>
+      <Header session={session} />
       {editing ? (
         <TextField
           label="Name"

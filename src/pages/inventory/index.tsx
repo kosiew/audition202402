@@ -1,13 +1,13 @@
 import AddProductForm from '@/components/AddProductForm';
+import Header from '@/components/Header';
 import PaginationControl from '@/components/PaginationControl';
 import ProductTable from '@/components/ProductTable';
-import SignOutButton from '@/components/SignOutButton';
 import SortFilterControls from '@/components/SortFilterControls';
 import { useRequireAuth } from '@/hooks/useRequireAuth';
 import { Product } from '@/types/product';
 import { SortBy } from '@/types/sortBy';
 import { SortOrder } from '@/types/sortOrder';
-import { Box, Grid, Typography, debounce } from '@mui/material';
+import { Box, debounce } from '@mui/material';
 import { Permission } from '@prisma/client';
 import { useEffect, useState } from 'react';
 
@@ -80,14 +80,7 @@ const InventoryPage = () => {
 
   return (
     <Box p={5}>
-      <Grid container justifyContent="space-between" alignItems="center">
-        <Grid item>
-          <Typography variant="h4">Inventory Management System</Typography>
-        </Grid>
-        <Grid item>
-          <SignOutButton />
-        </Grid>
-      </Grid>
+      <Header session={session}></Header>
       <Box pt={2}>
         <SortFilterControls
           limit={limit}
