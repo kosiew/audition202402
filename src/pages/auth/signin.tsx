@@ -21,7 +21,7 @@ export default function SignIn() {
       // Handle error messages
       console.error(result.error);
     } else {
-      router.push('/inventory');
+      window.location.href = '/inventory';
     }
   };
 
