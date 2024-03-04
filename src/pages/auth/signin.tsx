@@ -1,11 +1,13 @@
 // pages/auth/signin.tsx
 import { Button, Container, TextField, Typography } from '@mui/material';
 import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/router';
 import { useState } from 'react';
 
 export default function SignIn() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -19,8 +21,7 @@ export default function SignIn() {
       // Handle error messages
       console.error(result.error);
     } else {
-      // Redirect to the protected page
-      window.location.href = '/';
+      router.push('/inventory');
     }
   };
 
