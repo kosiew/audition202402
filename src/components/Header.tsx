@@ -1,5 +1,5 @@
 import UserInformation from '@/components/UserInformation';
-import { Grid, Typography } from '@mui/material';
+import { CircularProgress, Grid, Typography } from '@mui/material';
 import { Session } from 'next-auth';
 import React from 'react';
 
@@ -15,7 +15,7 @@ const Header: React.FC<Props> = ({ session, refreshing = false }) => {
       <Grid item>
         <Typography variant="h4">
           Inventory Management System
-          {refreshing && <span>...refreshing</span>}{' '}
+          {refreshing && <CircularProgress size={24} style={{ marginLeft: '10px' }} />}{' '}
         </Typography>
       </Grid>
       <UserInformation email={email} />
