@@ -46,7 +46,7 @@ const ProductPage = () => {
   const handleSave = async () => {
     if (!product || !product.supplierName) return;
     try {
-      const res = await fetch(`/api/update-inventory`, {
+      const res = await fetch(`/api/update-inventory2`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

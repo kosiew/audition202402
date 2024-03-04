@@ -14,6 +14,7 @@ type Request = NextApiRequest & {
   };
 };
 export const permissionsRequired = [{ action: 'update', subject: 'Product' }];
+
 export default async function handler(req: Request, res: NextApiResponse) {
   const { isAuthorized } = await authorize(req, res, permissionsRequired);
   if (!isAuthorized) return;
