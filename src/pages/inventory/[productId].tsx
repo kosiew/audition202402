@@ -28,6 +28,7 @@ const ProductPage = () => {
   const [product, setProduct] = useState<ProductInput | null>(null);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     if (!productId) return;
@@ -39,8 +40,9 @@ const ProductPage = () => {
       setProduct(updatedProduct);
       setLoading(false);
     };
-
+    setRefreshing(true);
     fetchProduct();
+    setRefreshing(false);
   }, [productId, trigger]);
 
   const handleEdit = () => {
@@ -48,6 +50,7 @@ const ProductPage = () => {
   };
 
   const handleSave = async () => {
+    setRefreshing(true);
     const formData = new FormData();
     formData.append('id', productId as string);
     formData.append('name', product?.name || '');
@@ -72,6 +75,7 @@ const ProductPage = () => {
 
       triggerUpdate();
       setEditing(false);
+      setRefreshing(false);
     } catch (error) {
       console.error('Failed to save product:', error);
     }
@@ -80,6 +84,7 @@ const ProductPage = () => {
     const confirmDelete = window.confirm('Are you sure you want to delete this product?');
     if (!confirmDelete) return;
 
+    setRefreshing(true);
     try {
       const res = await fetch(`/api/delete-inventory?productId=${productId}`, {
         method: 'DELETE',
@@ -88,6 +93,7 @@ const ProductPage = () => {
       if (!res.ok) {
         throw new Error(res.statusText);
       }
+      setRefreshing(false);
 
       router.push('/inventory');
     } catch (error) {
@@ -104,7 +110,7 @@ const ProductPage = () => {
   }
   return (
     <Container>
-      <Header session={session} />
+      <Header session={session} refreshing={refreshing} />
       <Grid container spacing={2} alignItems="center">
         {editing ? (
           <Box pt={5}>
