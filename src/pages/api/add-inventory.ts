@@ -2,23 +2,11 @@
 import { authorize } from '@/pages/api/utils/auth';
 import { getSupplier } from '@/pages/api/utils/getSupplier';
 import prisma from '@/pages/api/utils/prisma';
-import { v2 as cloudinary } from 'cloudinary';
+import cloudinary from '@/utils/cloudinary';
 import { IncomingForm } from 'formidable';
 import type { NextApiRequest, NextApiResponse } from 'next';
 export const permissionsRequired = [{ action: 'create', subject: 'Product' }];
 
-const cloudinaryConfig = process.env.CLOUDINARY_CONFIG;
-if (!cloudinaryConfig) {
-  throw new Error('CLOUDINARY_CONFIG is not defined in .env');
-}
-
-try {
-  const configOptions = JSON.parse(cloudinaryConfig);
-  cloudinary.config(configOptions);
-} catch (error) {
-  console.error('Failed to parse CLOUDINARY_CONFIG:', error);
-  throw new Error('Failed to parse CLOUDINARY_CONFIG');
-}
 // Disable Next.js body parsing
 export const config = {
   api: {

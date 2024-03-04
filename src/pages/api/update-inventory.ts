@@ -2,8 +2,8 @@
 import { authorize } from '@/pages/api/utils/auth';
 import { getSupplier } from '@/pages/api/utils/getSupplier';
 import prisma from '@/pages/api/utils/prisma';
+import cloudinary from '@/utils/cloudinary';
 import { Product, Supplier } from '@prisma/client';
-import { v2 as cloudinary } from 'cloudinary';
 import { IncomingForm } from 'formidable';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
@@ -32,10 +32,6 @@ export default async function handler(req: Request, res: NextApiResponse) {
     return res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 
-  console.log(
-    `%c==> [getting form data]`,
-    'background-color: #0595DE; color: yellow; padding: 8px; border-radius: 4px;'
-  );
   const form = new IncomingForm();
 
   form.parse(req, async (err, fields, files) => {
@@ -48,16 +44,8 @@ export default async function handler(req: Request, res: NextApiResponse) {
     const price = fields.price?.[0];
     const quantity = fields.quantity?.[0];
     const supplierName = fields.supplierName?.[0].trim();
-    console.log(
-      `%c==> [obtained form data]`,
-      'background-color: #0595DE; color: yellow; padding: 8px; border-radius: 4px;'
-    );
     // Ensure all fields are present
     if (!name || !price || !quantity || !supplierName) {
-      console.log(
-        `%c==> [missing data]`,
-        'background-color: #0595DE; color: yellow; padding: 8px; border-radius: 4px;'
-      );
       return res.status(400).json({ message: 'Missing required fields' });
     }
 
@@ -86,10 +74,6 @@ export default async function handler(req: Request, res: NextApiResponse) {
         supplierId: supplier.id,
         imageUrl,
       };
-      console.log(
-        `%c==> [prisma.update+]`,
-        'background-color: #0595DE; color: yellow; padding: 8px; border-radius: 4px;'
-      );
       const result = await prisma.product.update({
         where: { id },
         data,

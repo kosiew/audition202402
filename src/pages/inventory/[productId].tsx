@@ -54,6 +54,10 @@ const ProductPage = () => {
     formData.append('price', product?.price.toString() || '');
     formData.append('quantity', product?.quantity.toString() || '');
     formData.append('supplierName', product?.supplierName || '');
+    // Append the image file to the form data if one exists
+    if (imageFile) {
+      formData.append('file', imageFile, imageFile.name);
+    }
 
     if (!product || !product.supplierName) return;
     try {
