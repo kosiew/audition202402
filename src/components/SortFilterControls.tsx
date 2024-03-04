@@ -73,7 +73,7 @@ const SortFilterControls: React.FC<Props> = ({
             onChange={(e) => setSortBy(e.target.value as SortBy)}
             label="Sort By"
           >
-            <MenuItem value="name">Name</MenuItem>
+            <MenuItem value="name">Product Name</MenuItem>
             <MenuItem value="price">Price</MenuItem>
             <MenuItem value="quantity">Quantity</MenuItem>
           </Select>
