@@ -21,6 +21,7 @@ const InventoryPage = () => {
 
   const [products, setProducts] = useState<Product[]>([]);
   const [page, setPage] = useState(1);
+  const [refreshing, setRefreshing] = useState(false);
   const [totalPages, setTotalPages] = useState(1); // Add state for total pages
   const [limit, setLimit] = useState('10');
   const [sortBy, setSortBy] = useState<SortBy>('name');
@@ -49,12 +50,14 @@ const InventoryPage = () => {
         maxPrice,
       }).toString();
 
+      setRefreshing(true);
       const response = await fetch(`/api/inventory?${queryParams}`);
       const { totalPages, products, filteredPermissions } = await response.json();
 
       setProducts(products);
       setTotalPages(totalPages);
       setFilteredPermissions(filteredPermissions);
+      setRefreshing(false);
     };
 
     // debounce the fetchProducts function to prevent rapid API calls
@@ -82,7 +85,7 @@ const InventoryPage = () => {
 
   return (
     <Box p={5}>
-      <Header session={session}></Header>
+      <Header session={session} refreshing={refreshing}></Header>
       <Box pt={2}>
         <SortFilterControls
           limit={limit}
