@@ -23,7 +23,7 @@ const InventoryPage = () => {
   const [page, setPage] = useState(1);
   const [refreshing, setRefreshing] = useState(false);
   const [totalPages, setTotalPages] = useState(1); // Add state for total pages
-  const [limit, setLimit] = useState('10');
+  const [limit, setLimit] = useState('5');
   const [sortBy, setSortBy] = useState<SortBy>('name');
   const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
   const [inStock, setInStock] = useState(true);

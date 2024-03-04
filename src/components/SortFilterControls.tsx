@@ -31,7 +31,7 @@ type Props = {
 };
 
 const SortFilterControls: React.FC<Props> = ({
-  limit,
+  limit = '5',
   setLimit,
   sortBy,
   setSortBy,
