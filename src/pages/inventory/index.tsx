@@ -4,6 +4,7 @@ import PaginationControl from '@/components/PaginationControl';
 import ProductTable from '@/components/ProductTable';
 import SortFilterControls from '@/components/SortFilterControls';
 import { useRequireAuth } from '@/hooks/useRequireAuth';
+import { useTriggerUpdate } from '@/hooks/useTriggerUpdate';
 import { Product } from '@/types/product';
 import { SortBy } from '@/types/sortBy';
 import { SortOrder } from '@/types/sortOrder';
@@ -25,13 +26,11 @@ const InventoryPage = () => {
   const [sortBy, setSortBy] = useState<SortBy>('name');
   const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
   const [inStock, setInStock] = useState(true);
-  const [trigger, setTrigger] = useState(0);
   const [filterProductName, setFilterProductName] = useState('');
   const [filterSupplierName, setFilterSupplierName] = useState('');
   const [filterPriceRange, setFilterPriceRange] = useState<[number, number]>([0, Infinity]);
   const [filteredPermissions, setFilteredPermissions] = useState<Permission[]>([]);
-  // To trigger a state change, increment the counter
-  const updateProducts = () => setTrigger((trigger) => trigger + 1);
+  const { trigger, triggerUpdate } = useTriggerUpdate();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -103,12 +102,12 @@ const InventoryPage = () => {
         products={products}
         canEditProduct={canEditProduct}
         canDeleteProduct={canDeleteProduct}
-        updateProducts={updateProducts}
+        updateProducts={triggerUpdate}
       />
       <Box py={2}>
         <PaginationControl page={page} totalPages={totalPages} onPageChange={setPage} />
       </Box>
-      {canAddProduct && <AddProductForm updateProducts={updateProducts} />}
+      {canAddProduct && <AddProductForm updateProducts={triggerUpdate} />}
     </Box>
   );
 };

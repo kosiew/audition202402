@@ -1,6 +1,7 @@
 // pages/inventory/[productId].tsx
 import Header from '@/components/Header';
 import { useRequireAuth } from '@/hooks/useRequireAuth';
+import { useTriggerUpdate } from '@/hooks/useTriggerUpdate';
 import { Product } from '@/types/product';
 import {
   Box,
@@ -20,6 +21,7 @@ const ProductPage = () => {
   const session = useRequireAuth(); // This will redirect if not authenticated
   const router = useRouter();
   const { productId } = router.query;
+  const { trigger, triggerUpdate } = useTriggerUpdate();
 
   const [product, setProduct] = useState<ProductInput | null>(null);
   const [loading, setLoading] = useState(true);
@@ -37,7 +39,7 @@ const ProductPage = () => {
     };
 
     fetchProduct();
-  }, [productId]);
+  }, [productId, trigger]);
 
   const handleEdit = () => {
     setEditing(true);
@@ -62,6 +64,7 @@ const ProductPage = () => {
         throw new Error(res.statusText);
       }
 
+      triggerUpdate();
       setEditing(false);
     } catch (error) {
       console.error('Failed to save product:', error);
