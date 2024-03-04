@@ -110,6 +110,18 @@ async function main() {
     },
   });
 
+  // user2Role - cannot delete
+  const user2Role = await prisma.role.create({
+    data: {
+      name: 'UserRole_No_Delete',
+      permissions: {
+        connect: productPermissions
+          .filter((permission) => permission.action !== 'delete')
+          .map(({ id }) => ({ id })),
+      },
+    },
+  });
+
   // Add Users
   const emailVerified = new Date();
 
@@ -135,6 +147,19 @@ async function main() {
       emailVerified,
       roles: {
         connect: [{ id: userRole.id }],
+      },
+    },
+  });
+
+  const hashedPasswordUser2 = await bcrypt.hash('Xuser123X', 10);
+  const xDeleteUser = await prisma.user.create({
+    data: {
+      name: 'User 2',
+      email: 'user2@example.com',
+      password: hashedPasswordUser2,
+      emailVerified,
+      roles: {
+        connect: [{ id: user2Role.id }],
       },
     },
   });
