@@ -2,19 +2,28 @@
 import Header from '@/components/Header';
 import { useRequireAuth } from '@/hooks/useRequireAuth';
 import { Product } from '@/types/product';
-import { Box, Button, CircularProgress, Container, TextField, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Container,
+  Grid,
+  TextField,
+  Typography,
+} from '@mui/material';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+
+type ProductInput = Product & { supplierName?: string };
+
 const ProductPage = () => {
   const session = useRequireAuth(); // This will redirect if not authenticated
   const router = useRouter();
   const { productId } = router.query;
 
-  const [product, setProduct] = useState<Product | null>(null);
+  const [product, setProduct] = useState<ProductInput | null>(null);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
-
-  const [supplierName, setSupplierName] = useState(product?.supplier.name);
 
   useEffect(() => {
     if (!productId) return;
@@ -22,7 +31,8 @@ const ProductPage = () => {
     const fetchProduct = async () => {
       const res = await fetch(`/api/inventory/${productId}`);
       const data = await res.json();
-      setProduct(data.product);
+      const updatedProduct = { ...data.product, supplierName: data.product.supplier.name };
+      setProduct(updatedProduct);
       setLoading(false);
     };
 
@@ -34,7 +44,7 @@ const ProductPage = () => {
   };
 
   const handleSave = async () => {
-    if (!product || !supplierName) return;
+    if (!product || !product.supplierName) return;
     try {
       const res = await fetch(`/api/update-inventory`, {
         method: 'POST',
@@ -48,7 +58,7 @@ const ProductPage = () => {
             name: product.name,
             price: product.price,
             quantity: product.quantity,
-            supplierName: supplierName,
+            supplierName: product.supplierName || '',
             imageUrl: product.imageUrl,
           },
         }),
@@ -92,54 +102,71 @@ const ProductPage = () => {
   return (
     <Container>
       <Header session={session} />
-      {editing ? (
-        <TextField
-          label="Name"
-          value={product.name}
-          onChange={(e) => setProduct({ ...product, name: e.target.value })}
-        />
-      ) : (
-        <Typography variant="h4">{product.name}</Typography>
-      )}
-      {editing ? (
-        <TextField
-          label="Price"
-          value={product.price}
-          onChange={(e) => setProduct({ ...product, price: Number(e.target.value) })}
-        />
-      ) : (
-        <Typography variant="h6">{product.price.toFixed(2)}</Typography>
-      )}
-      {editing ? (
-        <TextField
-          label="Quantity"
-          value={product.quantity}
-          onChange={(e) => setProduct({ ...product, quantity: Number(e.target.value) })}
-        />
-      ) : (
-        <Typography variant="body1">Quantity: {product.quantity}</Typography>
-      )}
-      {editing ? (
-        <TextField
-          label="Supplier Name"
-          value={supplierName}
-          onChange={(e) => setSupplierName(e.target.value)}
-        />
-      ) : (
-        <Typography variant="body1">Supplier: {product.supplier.name}</Typography>
-      )}
-      {editing ? (
-        <TextField
-          label="Image URL"
-          value={product.imageUrl}
-          onChange={(e) => setProduct({ ...product, imageUrl: e.target.value })}
-        />
-      ) : (
-        product.imageUrl && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={product.imageUrl} alt={product.name} style={{ width: '30%', height: 'auto' }} />
-        )
-      )}
+      <Grid container spacing={2} alignItems="center">
+        {editing ? (
+          <Box pt={5}>
+            <TextField
+              label="Name"
+              value={product.name}
+              onChange={(e) => setProduct({ ...product, name: e.target.value })}
+            />
+            <TextField
+              label="Price"
+              value={product.price}
+              onChange={(e) => setProduct({ ...product, price: Number(e.target.value) })}
+            />
+            <TextField
+              label="Quantity"
+              value={product.quantity}
+              onChange={(e) => setProduct({ ...product, quantity: Number(e.target.value) })}
+            />
+            <TextField
+              label="Supplier Name"
+              value={product.supplierName}
+              onChange={(e) => setProduct({ ...product, supplierName: e.target.value })}
+            />
+            <TextField
+              label="Image URL"
+              value={product.imageUrl}
+              onChange={(e) => setProduct({ ...product, imageUrl: e.target.value })}
+            />
+          </Box>
+        ) : (
+          <>
+            <Grid item>
+              <Typography variant="h6">Product Name</Typography>
+              <Typography variant="body1">{product.name}</Typography>
+            </Grid>
+            <Grid item>
+              <Typography variant="h6">Price</Typography>
+              <Typography variant="body1">{product.price.toFixed(2)}</Typography>
+            </Grid>
+            <Grid item>
+              <Typography variant="h6">Quantity</Typography>
+              <Typography variant="body1">{product.quantity}</Typography>
+            </Grid>
+            <Grid item>
+              <Typography variant="h6">Supplier</Typography>
+              <Typography variant="body1">{product.supplier.name}</Typography>
+            </Grid>
+            {product.imageUrl && (
+              <Grid container ml={2}>
+                <Grid item>
+                  <Box>
+                    <Typography variant="h6">Image</Typography>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={product.imageUrl}
+                      alt={product.name}
+                      style={{ width: '30%', height: 'auto' }}
+                    />
+                  </Box>
+                </Grid>
+              </Grid>
+            )}
+          </>
+        )}
+      </Grid>
       <Box mt={2} />
       {editing ? (
         <Button color="primary" onClick={handleSave}>

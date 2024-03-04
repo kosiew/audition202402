@@ -13,6 +13,10 @@ export default NextAuth({
         password: { label: 'Password', type: 'password' },
       },
       authorize: async (credentials) => {
+        console.log(
+          `%c==> [nextauth - authorize+]`,
+          'background-color: #0595DE; color: yellow; padding: 8px; border-radius: 4px;'
+        );
         if (!credentials) return null;
 
         try {
