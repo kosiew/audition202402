@@ -1,14 +1,6 @@
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogTitle,
-  TextField,
-  Typography,
-} from '@mui/material';
-import { useCallback, useState } from 'react';
-import { useDropzone } from 'react-dropzone';
+import ImageUpload from '@/components/ImageUpload';
+import { Button, Dialog, DialogActions, DialogTitle, TextField, Typography } from '@mui/material';
+import { useState } from 'react';
 
 interface Props {
   updateProducts: () => void;
@@ -23,11 +15,6 @@ const AddProductForm: React.FC<Props> = ({ updateProducts }) => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
 
-  const onDrop = useCallback((acceptedFiles: File[]) => {
-    setImageFile(acceptedFiles[0]);
-  }, []);
-
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
   const clearForm = () => {
     setName('');
     setPrice('');
@@ -101,24 +88,7 @@ const AddProductForm: React.FC<Props> = ({ updateProducts }) => {
         onChange={(e) => setSupplierName(e.target.value)}
       />
       {/* Drag and Drop File Input */}
-      <Box
-        {...getRootProps()}
-        sx={{
-          border: '2px dashed #ccc',
-          padding: '20px',
-          textAlign: 'center',
-          cursor: 'pointer',
-          marginTop: '20px',
-        }}
-      >
-        <input {...getInputProps()} />
-        {isDragActive ? (
-          <p>Drop the image here ...</p>
-        ) : (
-          <p>Drag &apos;n&apos; drop an image here, or click to select an image</p>
-        )}
-        {imageFile && <p>{imageFile.name}</p>} {/* Display selected file name */}
-      </Box>
+      <ImageUpload imageFile={imageFile} setImageFile={setImageFile} />
       <Dialog open={!!errorMessage || open} onClose={handleClose}>
         <DialogTitle>{errorMessage}</DialogTitle>
         <DialogActions>

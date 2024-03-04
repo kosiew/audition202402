@@ -1,5 +1,6 @@
 // pages/inventory/[productId].tsx
 import Header from '@/components/Header';
+import ImageUpload from '@/components/ImageUpload';
 import { useRequireAuth } from '@/hooks/useRequireAuth';
 import { useTriggerUpdate } from '@/hooks/useTriggerUpdate';
 import { Product } from '@/types/product';
@@ -23,6 +24,7 @@ const ProductPage = () => {
   const { productId } = router.query;
   const { trigger, triggerUpdate } = useTriggerUpdate();
 
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const [product, setProduct] = useState<ProductInput | null>(null);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
@@ -122,11 +124,7 @@ const ProductPage = () => {
               value={product.supplierName}
               onChange={(e) => setProduct({ ...product, supplierName: e.target.value })}
             />
-            <TextField
-              label="Image URL"
-              value={product.imageUrl}
-              onChange={(e) => setProduct({ ...product, imageUrl: e.target.value })}
-            />
+            <ImageUpload imageFile={imageFile} setImageFile={setImageFile} />
           </Box>
         ) : (
           <>
