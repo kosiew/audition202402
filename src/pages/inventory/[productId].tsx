@@ -44,25 +44,17 @@ const ProductPage = () => {
   };
 
   const handleSave = async () => {
+    const formData = new FormData();
+    formData.append('id', productId as string);
+    formData.append('name', product.name);
+    formData.append('price', product.price.toString());
+    formData.append('quantity', product.quantity.toString());
+
     if (!product || !product.supplierName) return;
     try {
       const res = await fetch(`/api/update-inventory`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({
-          id: productId,
-          type: 'product',
-          data: {
-            name: product.name,
-            price: product.price,
-            quantity: product.quantity,
-            supplierName: product.supplierName || '',
-            imageUrl: product.imageUrl,
-          },
-        }),
+        body: formData,
       });
 
       if (!res.ok) {
