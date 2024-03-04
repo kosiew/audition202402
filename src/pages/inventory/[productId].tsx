@@ -46,9 +46,10 @@ const ProductPage = () => {
   const handleSave = async () => {
     const formData = new FormData();
     formData.append('id', productId as string);
-    formData.append('name', product.name);
-    formData.append('price', product.price.toString());
-    formData.append('quantity', product.quantity.toString());
+    formData.append('name', product?.name || '');
+    formData.append('price', product?.price.toString() || '');
+    formData.append('quantity', product?.quantity.toString() || '');
+    formData.append('supplierName', product?.supplierName || '');
 
     if (!product || !product.supplierName) return;
     try {
