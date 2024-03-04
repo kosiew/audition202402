@@ -1,18 +1,16 @@
 // pages/auth/signin.tsx
 import { Button, Container, TextField, Typography } from '@mui/material';
 import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/router';
 import { useState } from 'react';
 
 export default function SignIn() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const result = await signIn('credentials', {
-      redirect: false,
+      redirect: true,
       email,
       password,
     });
