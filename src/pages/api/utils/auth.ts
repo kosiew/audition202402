@@ -26,15 +26,7 @@ export async function authorize(
   res: NextApiResponse,
   permissionsRequired: PermissionRequired[]
 ) {
-  console.log(
-    `%c==> [authorize+]`,
-    'background-color: #0595DE; color: yellow; padding: 8px; border-radius: 4px;'
-  );
   const user = await getRequestUser(req, res);
-  console.log(
-    `%c==> [authorize - obtained user]`,
-    'background-color: #0595DE; color: yellow; padding: 8px; border-radius: 4px;'
-  );
 
   if (!user) {
     res.status(404).json({ message: 'User not found.' });
@@ -62,23 +54,10 @@ export async function authorize(
 }
 
 export async function getRequestUser(req: NextApiRequest, res: NextApiResponse) {
-  console.log(
-    `%c==> [getRequestUser+]`,
-    'background-color: #0595DE; color: yellow; padding: 8px; border-radius: 4px;'
-  );
   const session = await getSession({ req, broadcast: true });
-  console.log(
-    `%c==> [getRequestUser - got session]`,
-    'background-color: #0595DE; color: yellow; padding: 8px; border-radius: 4px;',
-    { session }
-  );
 
   if (!session || !session.user) {
     res.status(401).json({ message: 'You must be logged in to access this.' });
-    console.log(
-      `%c==> [getRequestUser - no user]`,
-      'background-color: #0595DE; color: yellow; padding: 8px; border-radius: 4px;'
-    );
     return false;
   }
 
