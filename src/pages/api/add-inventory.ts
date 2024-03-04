@@ -1,8 +1,8 @@
 // pages/api/add-inventory.ts
 import { authorize } from '@/pages/api/utils/auth';
+import { getImageUrl } from '@/pages/api/utils/getImageUrl';
 import { getSupplier } from '@/pages/api/utils/getSupplier';
 import prisma from '@/pages/api/utils/prisma';
-import cloudinary from '@/utils/cloudinary';
 import { IncomingForm } from 'formidable';
 import type { NextApiRequest, NextApiResponse } from 'next';
 export const permissionsRequired = [{ action: 'create', subject: 'Product' }];
@@ -37,20 +37,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ message: 'Missing required fields' });
     }
 
-    let imageUrl = ''; // Initialize image URL as null
-    if (files.file) {
-      const file = Array.isArray(files.file) ? files.file[0] : files.file;
-      if (file.filepath) {
-        try {
-          const result = await cloudinary.uploader.upload(file.filepath);
-          imageUrl = result.url; // Set the Cloudinary image URL
-        } catch (uploadError) {
-          console.error('Image upload error:', uploadError);
-          return res.status(500).json({ message: 'Image upload failed' });
-        }
-      }
-    }
-
+    const imageUrl = (await getImageUrl(files, res)) || '';
     try {
       const supplier = await getSupplier(supplierName);
       const product = await prisma.product.create({

@@ -1,20 +1,11 @@
 // pages/api/update-inventory.ts
 import { authorize } from '@/pages/api/utils/auth';
+import { getImageUrl } from '@/pages/api/utils/getImageUrl';
 import { getSupplier } from '@/pages/api/utils/getSupplier';
 import prisma from '@/pages/api/utils/prisma';
-import cloudinary from '@/utils/cloudinary';
-import { Product, Supplier } from '@prisma/client';
 import { IncomingForm } from 'formidable';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-type ProductWithSupplierName = Product & { supplierName?: string };
-type Request = NextApiRequest & {
-  body: {
-    id: number;
-    type: string;
-    data: ProductWithSupplierName | Supplier;
-  };
-};
 export const permissionsRequired = [{ action: 'update', subject: 'Product' }];
 
 // Disable Next.js body parsing
@@ -24,7 +15,7 @@ export const config = {
   },
 };
 
-export default async function handler(req: Request, res: NextApiResponse) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { isAuthorized } = await authorize(req, res, permissionsRequired);
   if (!isAuthorized) return;
   if (req.method !== 'POST') {
@@ -48,21 +39,7 @@ export default async function handler(req: Request, res: NextApiResponse) {
     if (!name || !price || !quantity || !supplierName) {
       return res.status(400).json({ message: 'Missing required fields' });
     }
-
-    // @todo ==>  refactor this to a helper function
-    let imageUrl = ''; // Initialize image URL as null
-    if (files.file) {
-      const file = Array.isArray(files.file) ? files.file[0] : files.file;
-      if (file.filepath) {
-        try {
-          const result = await cloudinary.uploader.upload(file.filepath);
-          imageUrl = result.url; // Set the Cloudinary image URL
-        } catch (uploadError) {
-          console.error('Image upload error:', uploadError);
-          return res.status(500).json({ message: 'Image upload failed' });
-        }
-      }
-    }
+    const imageUrl = (await getImageUrl(files, res)) || '';
 
     try {
       const supplier = await getSupplier(supplierName);

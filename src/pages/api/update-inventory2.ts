@@ -7,10 +7,6 @@ const prisma = new PrismaClient();
 export const permissionsRequired = [{ action: 'update', subject: 'Product' }];
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  console.log(
-    `%c==> [update-inventory2]`,
-    'background-color: #0595DE; color: yellow; padding: 8px; border-radius: 4px;'
-  );
   // const { isAuthorized } = await authorize(req, res, permissionsRequired);
   // if (!isAuthorized) return;
 
