@@ -11,8 +11,8 @@ async function main() {
   const month = date.toLocaleString('default', { month: 'short' }).toUpperCase();
   const day = String(date.getDate()).padStart(2, '0');
   const hour = String(date.getHours()).padStart(2, '0');
-
-  const prefix = `${month}${day}-${hour}`;
+  const minute = String(date.getMinutes()).padStart(2, '0');
+  const prefix = `${month}${day}-${hour}-${minute}`;
   // prefixes = prefix + <A> where A...Z
   const prefixes = Array.from({ length: 26 }, (_, i) => prefix + String.fromCharCode(65 + i));
 
@@ -47,6 +47,10 @@ async function main() {
       } catch (error) {}
     }
   }
+
+  // count how many products are in the database
+  const count = await prisma.product.count();
+  console.log(`There are ${count} products in the database.`);
   console.log('Seeding finished.');
 }
 
