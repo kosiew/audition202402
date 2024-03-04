@@ -51,6 +51,11 @@ export default async function handler(
   const limitNumber = parseInt(limit);
   const skip = (pageNumber - 1) * limitNumber;
   const minPriceNumber = parseFloat(minPrice);
+  console.log(
+    `%c==> [api]`,
+    'background-color: #0595DE; color: yellow; padding: 8px; border-radius: 4px;',
+    { maxPrice }
+  );
   const maxPriceNumber = maxPrice === 'Infinity' ? Infinity : parseFloat(maxPrice);
   let queryOptions = {
     take: limitNumber,

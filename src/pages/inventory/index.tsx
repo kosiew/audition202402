@@ -33,6 +33,9 @@ const InventoryPage = () => {
   const { trigger, triggerUpdate } = useTriggerUpdate();
 
   useEffect(() => {
+    const maxPrice = isNaN(Number(filterPriceRange[1]))
+      ? 'Infinity'
+      : filterPriceRange[1].toString();
     const fetchProducts = async () => {
       const queryParams = new URLSearchParams({
         page: page.toString(),
@@ -43,7 +46,7 @@ const InventoryPage = () => {
         productName: filterProductName,
         supplierName: filterSupplierName,
         minPrice: filterPriceRange[0].toString(),
-        maxPrice: filterPriceRange[1].toString(),
+        maxPrice,
       }).toString();
 
       const response = await fetch(`/api/inventory?${queryParams}`);

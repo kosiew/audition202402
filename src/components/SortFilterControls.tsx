@@ -119,7 +119,14 @@ const SortFilterControls: React.FC<Props> = ({
           type={filterPriceRange[1] === Infinity ? 'text' : 'number'}
           value={filterPriceRange[1] === Infinity ? 'Max' : filterPriceRange[1]}
           onChange={(e) => {
-            const value = e.target.value === 'Max' ? Infinity : Number(e.target.value);
+            let value;
+            if (e.target.value === 'Max') {
+              value = Infinity;
+            } else if (isNaN(Number(e.target.value))) {
+              value = 0;
+            } else {
+              value = Number(e.target.value);
+            }
             setFilterPriceRange([filterPriceRange[0], value]);
           }}
         />
