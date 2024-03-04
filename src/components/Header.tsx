@@ -15,7 +15,7 @@ const Header: React.FC<Props> = ({ session, refreshing = false }) => {
       <Grid item>
         <Typography variant="h4">
           Inventory Management System
-          {refreshing && <span>...refreshing</span>}{' '}
+          {refreshing && <span style={{ color: 'lightgray' }}>...refreshing</span>}{' '}
         </Typography>
       </Grid>
       <UserInformation email={email} />
