@@ -9,11 +9,19 @@ export default function SignIn() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const result = await signIn('credentials', {
+    const result = await signIn('Credentials', {
       redirect: true,
+      callbackUrl: '/inventory',
       email,
       password,
     });
+
+    // @todo ==>  this is not reached
+    console.log(
+      `%c👀  ==> [auth/signIn result] 👀`,
+      'background-color: #0595DE; color: yellow; padding: 8px; border-radius: 4px;',
+      { result }
+    );
 
     if (result?.error) {
       // Handle error messages
