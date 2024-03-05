@@ -109,11 +109,14 @@ const InventoryPage = () => {
         canEditProduct={canEditProduct}
         canDeleteProduct={canDeleteProduct}
         updateProducts={triggerUpdate}
+        setRefreshing={setRefreshing}
       />
       <Box py={2}>
         <PaginationControl page={page} totalPages={totalPages} onPageChange={setPage} />
       </Box>
-      {canAddProduct && <AddProductForm updateProducts={triggerUpdate} />}
+      {canAddProduct && (
+        <AddProductForm updateProducts={triggerUpdate} setRefreshing={setRefreshing} />
+      )}
     </Box>
   );
 };

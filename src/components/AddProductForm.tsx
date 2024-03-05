@@ -1,4 +1,5 @@
 import ImageUpload from '@/components/ImageUpload';
+import { useSnackbar } from '@/hooks/useSnackbar';
 import { Button, Dialog, DialogActions, DialogTitle, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
 
@@ -15,6 +16,7 @@ const AddProductForm: React.FC<Props> = ({ updateProducts, setRefreshing }) => {
   const [supplierName, setSupplierName] = useState(''); // New state for supplier name
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
+  const { showSnackbar, SnackbarComponent } = useSnackbar();
 
   const clearForm = () => {
     setName('');
@@ -65,6 +67,7 @@ const AddProductForm: React.FC<Props> = ({ updateProducts, setRefreshing }) => {
       }
 
       updateProducts(); // Trigger a state update to refresh the product list
+      showSnackbar('Product added successfully');
       setRefreshing(false);
 
       // Optionally, clear the form fields and update the UI accordingly
@@ -103,6 +106,7 @@ const AddProductForm: React.FC<Props> = ({ updateProducts, setRefreshing }) => {
       <Button sx={{ mt: 2 }} variant="outlined" color="primary" onClick={handleAddProduct}>
         Add Product
       </Button>
+      <SnackbarComponent />
     </div>
   );
 };
