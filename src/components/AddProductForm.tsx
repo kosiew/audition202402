@@ -1,7 +1,7 @@
 import ImageUpload from '@/components/ImageUpload';
 import { useSnackbar } from '@/hooks/useSnackbar';
 import { Button, Dialog, DialogActions, DialogTitle, TextField, Typography } from '@mui/material';
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 interface Props {
   updateProducts: () => void;
@@ -47,7 +47,6 @@ const AddProductForm: React.FC<Props> = ({ updateProducts, setRefreshing }) => {
     formData.append('price', price);
     formData.append('quantity', quantity);
     formData.append('supplierName', supplierName);
-    // Append other necessary fields like supplierName, etc.
 
     // Append the image file to the form data if one exists
     if (imageFile) {
@@ -71,15 +70,12 @@ const AddProductForm: React.FC<Props> = ({ updateProducts, setRefreshing }) => {
       showSnackbar('Added product successfully');
       setRefreshing(false);
 
-      // Optionally, clear the form fields and update the UI accordingly
       clearForm();
-      // Additional logic like closing a modal or showing a success message
     } catch (error) {
       const errorMessage = 'Failed to add product';
       console.error(errorMessage, error);
       setErrorMessage(errorMessage);
       setOpen(true);
-      // Handle errors like showing an error message to the user
     }
   };
 
