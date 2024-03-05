@@ -2,17 +2,10 @@
 import Header from '@/components/Header';
 import ImageUpload from '@/components/ImageUpload';
 import { useRequireAuth } from '@/hooks/useRequireAuth';
+import { useSnackbar } from '@/hooks/useSnackbar';
 import { useTriggerUpdate } from '@/hooks/useTriggerUpdate';
 import { Product } from '@/types/product';
-import {
-  Box,
-  Button,
-  CircularProgress,
-  Container,
-  Grid,
-  TextField,
-  Typography,
-} from '@mui/material';
+import { Box, Button, CircularProgress, Grid, TextField, Typography } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
@@ -29,6 +22,7 @@ const ProductPage = () => {
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const { showSnackbar, SnackbarComponent } = useSnackbar();
 
   useEffect(() => {
     if (!productId) return;
@@ -51,6 +45,7 @@ const ProductPage = () => {
 
   const handleSave = async () => {
     setRefreshing(true);
+    showSnackbar('Saving product...');
     const formData = new FormData();
     formData.append('id', productId as string);
     formData.append('name', product?.name || '');
@@ -76,6 +71,7 @@ const ProductPage = () => {
       triggerUpdate();
       setEditing(false);
       setRefreshing(false);
+      showSnackbar('Saved product successfully');
     } catch (error) {
       console.error('Failed to save product:', error);
     }
@@ -85,6 +81,7 @@ const ProductPage = () => {
     if (!confirmDelete) return;
 
     setRefreshing(true);
+    showSnackbar('Deleting product...');
     try {
       const res = await fetch(`/api/delete-inventory?productId=${productId}`, {
         method: 'DELETE',
@@ -94,6 +91,7 @@ const ProductPage = () => {
         throw new Error(res.statusText);
       }
       setRefreshing(false);
+      showSnackbar('Deleted product successfully');
 
       router.push('/inventory');
     } catch (error) {
@@ -109,83 +107,86 @@ const ProductPage = () => {
     return <Typography variant="h6">Product not found</Typography>;
   }
   return (
-    <Container>
-      <Header session={session} refreshing={refreshing} />
-      <Grid container spacing={2} alignItems="center">
-        {editing ? (
-          <Box pt={5}>
-            <TextField
-              label="Name"
-              value={product.name}
-              onChange={(e) => setProduct({ ...product, name: e.target.value })}
-            />
-            <TextField
-              label="Price"
-              value={product.price}
-              onChange={(e) => setProduct({ ...product, price: Number(e.target.value) })}
-            />
-            <TextField
-              label="Quantity"
-              value={product.quantity}
-              onChange={(e) => setProduct({ ...product, quantity: Number(e.target.value) })}
-            />
-            <TextField
-              label="Supplier Name"
-              value={product.supplierName}
-              onChange={(e) => setProduct({ ...product, supplierName: e.target.value })}
-            />
-            <ImageUpload imageFile={imageFile} setImageFile={setImageFile} />
-          </Box>
-        ) : (
-          <>
-            <Grid item>
-              <Typography variant="h6">Product Name</Typography>
-              <Typography variant="body1">{product.name}</Typography>
-            </Grid>
-            <Grid item>
-              <Typography variant="h6">Price</Typography>
-              <Typography variant="body1">{product.price.toFixed(2)}</Typography>
-            </Grid>
-            <Grid item>
-              <Typography variant="h6">Quantity</Typography>
-              <Typography variant="body1">{product.quantity}</Typography>
-            </Grid>
-            <Grid item>
-              <Typography variant="h6">Supplier</Typography>
-              <Typography variant="body1">{product.supplier.name}</Typography>
-            </Grid>
-            {product.imageUrl && (
-              <Grid container ml={2}>
-                <Grid item>
-                  <Box>
-                    <Typography variant="h6">Image</Typography>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={product.imageUrl}
-                      alt={product.name}
-                      style={{ width: '30%', height: 'auto' }}
-                    />
-                  </Box>
-                </Grid>
+    <>
+      <Box p={5}>
+        <Header session={session} refreshing={refreshing} />
+        <Grid container spacing={2} alignItems="center">
+          {editing ? (
+            <Box pt={5}>
+              <TextField
+                label="Name"
+                value={product.name}
+                onChange={(e) => setProduct({ ...product, name: e.target.value })}
+              />
+              <TextField
+                label="Price"
+                value={product.price}
+                onChange={(e) => setProduct({ ...product, price: Number(e.target.value) })}
+              />
+              <TextField
+                label="Quantity"
+                value={product.quantity}
+                onChange={(e) => setProduct({ ...product, quantity: Number(e.target.value) })}
+              />
+              <TextField
+                label="Supplier Name"
+                value={product.supplierName}
+                onChange={(e) => setProduct({ ...product, supplierName: e.target.value })}
+              />
+              <ImageUpload imageFile={imageFile} setImageFile={setImageFile} />
+            </Box>
+          ) : (
+            <>
+              <Grid item>
+                <Typography variant="h6">Product Name</Typography>
+                <Typography variant="body1">{product.name}</Typography>
               </Grid>
-            )}
-          </>
+              <Grid item>
+                <Typography variant="h6">Price</Typography>
+                <Typography variant="body1">{product.price.toFixed(2)}</Typography>
+              </Grid>
+              <Grid item>
+                <Typography variant="h6">Quantity</Typography>
+                <Typography variant="body1">{product.quantity}</Typography>
+              </Grid>
+              <Grid item>
+                <Typography variant="h6">Supplier</Typography>
+                <Typography variant="body1">{product.supplier.name}</Typography>
+              </Grid>
+              {product.imageUrl && (
+                <Grid container ml={2}>
+                  <Grid item>
+                    <Box>
+                      <Typography variant="h6">Image</Typography>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={product.imageUrl}
+                        alt={product.name}
+                        style={{ width: '30%', height: 'auto' }}
+                      />
+                    </Box>
+                  </Grid>
+                </Grid>
+              )}
+            </>
+          )}
+        </Grid>
+        <Box mt={2} />
+        {editing ? (
+          <Button color="primary" onClick={handleSave}>
+            Save
+          </Button>
+        ) : (
+          <Button color="primary" onClick={handleEdit}>
+            Edit
+          </Button>
         )}
-      </Grid>
-      <Box mt={2} />
-      {editing ? (
-        <Button color="primary" onClick={handleSave}>
-          Save
+        <Button color="secondary" onClick={handleDelete}>
+          Delete
         </Button>
-      ) : (
-        <Button color="primary" onClick={handleEdit}>
-          Edit
-        </Button>
-      )}
-      <Button color="secondary" onClick={handleDelete}>
-        Delete
-      </Button>
-    </Container>
+      </Box>
+      <SnackbarComponent />
+    </>
   );
 };
 
