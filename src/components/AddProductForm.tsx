@@ -4,9 +4,10 @@ import { useState } from 'react';
 
 interface Props {
   updateProducts: () => void;
+  setRefreshing: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const AddProductForm: React.FC<Props> = ({ updateProducts }) => {
+const AddProductForm: React.FC<Props> = ({ updateProducts, setRefreshing }) => {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
@@ -53,6 +54,7 @@ const AddProductForm: React.FC<Props> = ({ updateProducts }) => {
 
     // Send a POST request to the server with the form data
     try {
+      setRefreshing(true);
       const response = await fetch('/api/add-inventory', {
         method: 'POST',
         body: formData,
@@ -63,6 +65,7 @@ const AddProductForm: React.FC<Props> = ({ updateProducts }) => {
       }
 
       updateProducts(); // Trigger a state update to refresh the product list
+      setRefreshing(false);
 
       // Optionally, clear the form fields and update the UI accordingly
       clearForm();
