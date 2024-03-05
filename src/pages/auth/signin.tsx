@@ -19,7 +19,13 @@ export default function SignIn() {
       // Handle error messages
       console.error(result.error);
     } else {
-      window.location.href = '/inventory';
+      // @todo ==>  remove this as it's not needed
+      const path = '/inventory';
+      console.log(
+        `%c==> [signIn - redirect to ${path}]`,
+        'background-color: #0595DE; color: yellow; padding: 8px; border-radius: 4px;'
+      );
+      window.location.href = path;
     }
   };
 

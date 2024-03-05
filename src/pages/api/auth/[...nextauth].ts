@@ -14,6 +14,10 @@ export default NextAuth({
       },
       authorize: async (credentials) => {
         if (!credentials) return null;
+        console.log(
+          `%c==> [nextauth - authorize+]`,
+          'background-color: #0595DE; color: yellow; padding: 8px; border-radius: 4px;'
+        );
 
         try {
           // Find user by email
