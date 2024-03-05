@@ -6,7 +6,7 @@ import { useTriggerUpdate } from '@/hooks/useTriggerUpdate';
 import { Product } from '@/types/product';
 import { Box, Button, CircularProgress, Grid, TextField, Typography } from '@mui/material';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 type ProductInput = Product & { supplierName?: string };
 

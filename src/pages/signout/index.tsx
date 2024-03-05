@@ -1,5 +1,6 @@
 import { Button, Container, Typography } from '@mui/material';
 import { useRouter } from 'next/router';
+import React from 'react';
 
 const SignOutPage: React.FC = () => {
   const router = useRouter();

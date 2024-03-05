@@ -10,7 +10,7 @@ import { SortBy } from '@/types/sortBy';
 import { SortOrder } from '@/types/sortOrder';
 import { Box, debounce } from '@mui/material';
 import { Permission } from '@prisma/client';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const addProductPermission = { action: 'create', subject: 'Product' };
 const editProductPermission = { action: 'update', subject: 'Product' };
