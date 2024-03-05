@@ -19,6 +19,7 @@ interface Props {
   canEditProduct: boolean;
   canDeleteProduct: boolean;
   updateProducts: () => void;
+  setRefreshing: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const ProductTable: React.FC<Props> = ({
@@ -26,6 +27,7 @@ const ProductTable: React.FC<Props> = ({
   canDeleteProduct,
   canEditProduct,
   updateProducts,
+  setRefreshing,
 }) => {
   const router = useRouter();
 
@@ -38,6 +40,7 @@ const ProductTable: React.FC<Props> = ({
     if (!confirmDelete) return;
 
     try {
+      setRefreshing(true);
       const res = await fetch(`/api/delete-inventory?productId=${productId}`, {
         method: 'DELETE',
       });
@@ -47,7 +50,7 @@ const ProductTable: React.FC<Props> = ({
       }
 
       updateProducts(); // Refresh the product list here
-      // ...
+      setRefreshing(false);
     } catch (error) {
       console.error('Failed to delete product:', error);
     }
