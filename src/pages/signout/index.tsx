@@ -1,7 +1,8 @@
 import { Button, Container, Typography } from '@mui/material';
-import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/router';
 
 const SignOutPage: React.FC = () => {
+  const router = useRouter();
   return (
     <Container component="main" maxWidth="xs">
       <Typography component="h1" variant="h5">
@@ -12,7 +13,7 @@ const SignOutPage: React.FC = () => {
         fullWidth
         variant="contained"
         color="primary"
-        onClick={() => signIn('Credentials', { callbackUrl: '/inventory' })}
+        onClick={() => router.push('/auth/signin')}
       >
         Sign In Again
       </Button>
