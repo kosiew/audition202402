@@ -1,4 +1,3 @@
-// pages/auth/signin.tsx
 import { Button, Container, TextField, Typography } from '@mui/material';
 import { signIn } from 'next-auth/react';
 import { useState } from 'react';
@@ -10,32 +9,12 @@ export default function SignIn() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // credentials, NOT Credentials
-    const result = await signIn('credentials', {
+    await signIn('credentials', {
       redirect: true,
       callbackUrl: '/inventory',
       email,
       password,
     });
-
-    // @todo ==>  this is not reached
-    console.log(
-      `%c👀  ==> [auth/signIn result] 👀`,
-      'background-color: #0595DE; color: yellow; padding: 8px; border-radius: 4px;',
-      { result }
-    );
-
-    if (result?.error) {
-      // Handle error messages
-      console.error(result.error);
-    } else {
-      // @todo ==>  remove this as it's not needed
-      const path = '/inventory';
-      console.log(
-        `%c==> [signIn - redirect to ${path}]`,
-        'background-color: #0595DE; color: yellow; padding: 8px; border-radius: 4px;'
-      );
-      window.location.href = path;
-    }
   };
 
   return (

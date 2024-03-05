@@ -1,4 +1,3 @@
-// pages/api/users/[userId]/roles.ts
 import { authorize } from '@/pages/api/utils/auth';
 import { NextApiRequest, NextApiResponse } from 'next';
 
