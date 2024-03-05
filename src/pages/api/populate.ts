@@ -1,4 +1,3 @@
-// pages/api/populate.ts
 import { authorize } from '@/pages/api/utils/auth';
 import prisma from '@/pages/api/utils/prisma';
 import type { NextApiRequest, NextApiResponse } from 'next';

@@ -1,4 +1,3 @@
-// pages/api/permissions/index.ts
 import { authorize } from '@/pages/api/utils/auth';
 import { NextApiRequest, NextApiResponse } from 'next';
 
@@ -9,8 +8,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (!isAuthorized) return; // Response is already handled in the authorize function
 
   try {
-    // await authorize(req);
-
     if (req.method === 'POST') {
       const permission = await prisma.permission.create({
         data: req.body,

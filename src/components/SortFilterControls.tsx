@@ -96,7 +96,7 @@ const SortFilterControls: React.FC<Props> = ({
         <Typography variant="h6" py={1}>
           Filter
         </Typography>
-        {/* filter controls as needed */}
+        {/* filter controls */}
         <TextField
           label="Product Name"
           value={filterProductName}
@@ -107,7 +107,6 @@ const SortFilterControls: React.FC<Props> = ({
           value={filterSupplierName}
           onChange={(e) => setFilterSupplierName(e.target.value)}
         />
-        {/* You can create a range input or use two separate text fields for min and max price */}
         <TextField
           label="Minimum Price"
           type="number"

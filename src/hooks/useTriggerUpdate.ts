@@ -1,5 +1,3 @@
-// hooks/useRequireAuth.tsx
-
 import { useState } from 'react';
 
 export const useTriggerUpdate = () => {

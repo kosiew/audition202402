@@ -1,4 +1,3 @@
-// pages/api/delete-inventory.ts
 import { authorize } from '@/pages/api/utils/auth';
 import prisma from '@/pages/api/utils/prisma';
 import type { NextApiRequest, NextApiResponse } from 'next';
@@ -27,7 +26,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(404).json({ message: 'Product not found' });
       }
       const supplierId = product.supplierId;
-      // Delete the product
+
       await prisma.product.delete({
         where: {
           id: productIdNumber,

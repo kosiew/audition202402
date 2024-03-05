@@ -1,4 +1,3 @@
-// pages/api/inventory/index.ts
 import { authorize } from '@/pages/api/utils/auth';
 import prisma from '@/pages/api/utils/prisma';
 import { Product } from '@/types/product';
@@ -21,7 +20,7 @@ type QueryParams = {
 };
 
 type Response = {
-  products: Product[]; // Replace `any` with your Product type or interface
+  products: Product[];
   total: number;
   page: number;
   totalPages: number;
@@ -73,7 +72,7 @@ export default async function handler(
       contains: productName,
       mode: 'insensitive',
     },
-    // Case-insensitive substring search for supplier name through a relation
+    // Case-insensitive substring search for supplier name
     supplier: {
       name: {
         contains: supplierName,

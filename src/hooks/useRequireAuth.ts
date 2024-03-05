@@ -12,5 +12,5 @@ export const useRequireAuth = () => {
     if (status === 'unauthenticated') router.push('/auth/signin');
   }, [status, router]);
 
-  return session; // Return the session so you can use it in your component
+  return session;
 };

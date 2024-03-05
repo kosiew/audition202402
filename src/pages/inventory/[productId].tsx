@@ -1,4 +1,3 @@
-// pages/inventory/[productId].tsx
 import Header from '@/components/Header';
 import ImageUpload from '@/components/ImageUpload';
 import { useRequireAuth } from '@/hooks/useRequireAuth';

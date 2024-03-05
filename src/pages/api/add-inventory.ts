@@ -1,4 +1,3 @@
-// pages/api/add-inventory.ts
 import { authorize } from '@/pages/api/utils/auth';
 import { getImageUrl } from '@/pages/api/utils/getImageUrl';
 import { getSupplier } from '@/pages/api/utils/getSupplier';

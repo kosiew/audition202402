@@ -3,7 +3,7 @@ import { Files } from 'formidable';
 import { NextApiResponse } from 'next';
 
 export async function getImageUrl(files: Files, res: NextApiResponse) {
-  let imageUrl = ''; // Initialize image URL as null
+  let imageUrl = '';
   if (files.file) {
     const file = Array.isArray(files.file) ? files.file[0] : files.file;
     if (file.filepath) {

@@ -1,4 +1,3 @@
-// pages/api/auth/[...nextauth].ts
 import prisma from '@/pages/api/utils/prisma';
 import bcrypt from 'bcryptjs';
 import NextAuth from 'next-auth';

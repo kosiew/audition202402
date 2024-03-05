@@ -1,4 +1,3 @@
-// pages/api/inventory/[productId].ts
 import { authorize } from '@/pages/api/utils/auth';
 import { Product } from '@/types/product';
 import { Permission } from '@prisma/client';
@@ -7,7 +6,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import prisma from '@/pages/api/utils/prisma';
 export const permissionsRequired = [{ action: 'view', subject: 'Product' }];
 type Response = {
-  product: Product; // Replace `any` with your Product type or interface
+  product: Product;
   filteredPermissions: Permission[];
 };
 export default async function handler(
@@ -23,12 +22,10 @@ export default async function handler(
   try {
     const productIdNumber = parseInt(productId as string);
 
-    // Validate productId is a number
     if (isNaN(productIdNumber)) {
       return res.status(400).json({ message: 'Product ID must be a valid number' });
     }
 
-    // Find the product by ID
     const product = await prisma.product.findUnique({
       where: {
         id: productIdNumber,
