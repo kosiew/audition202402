@@ -1,6 +1,6 @@
 const host = 'https://audition202402.vercel.app';
 describe('Authenticated API access', () => {
-  let productId;
+  let productId = '';
   beforeEach(() => {
     // Perform login before each test
     cy.visit(`${host}/auth/signin`);
