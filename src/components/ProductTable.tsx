@@ -1,3 +1,4 @@
+import { useSnackbar } from '@/hooks/useSnackbar';
 import { Product } from '@/types/product';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -30,6 +31,7 @@ const ProductTable: React.FC<Props> = ({
   setRefreshing,
 }) => {
   const router = useRouter();
+  const { showSnackbar, SnackbarComponent } = useSnackbar();
 
   const handleEdit = (productId: number) => {
     router.push(`/inventory/${productId}`);
@@ -41,6 +43,7 @@ const ProductTable: React.FC<Props> = ({
 
     try {
       setRefreshing(true);
+      showSnackbar('Deleting product...');
       const res = await fetch(`/api/delete-inventory?productId=${productId}`, {
         method: 'DELETE',
       });
@@ -51,6 +54,7 @@ const ProductTable: React.FC<Props> = ({
 
       updateProducts(); // Refresh the product list here
       setRefreshing(false);
+      showSnackbar('Deleted product successfully');
     } catch (error) {
       console.error('Failed to delete product:', error);
     }
@@ -103,6 +107,7 @@ const ProductTable: React.FC<Props> = ({
           </TableBody>
         </Table>
       </TableContainer>
+      <SnackbarComponent />
     </>
   );
 };

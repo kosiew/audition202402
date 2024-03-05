@@ -57,6 +57,7 @@ const AddProductForm: React.FC<Props> = ({ updateProducts, setRefreshing }) => {
     // Send a POST request to the server with the form data
     try {
       setRefreshing(true);
+      showSnackbar('Adding product...');
       const response = await fetch('/api/add-inventory', {
         method: 'POST',
         body: formData,
@@ -67,7 +68,7 @@ const AddProductForm: React.FC<Props> = ({ updateProducts, setRefreshing }) => {
       }
 
       updateProducts(); // Trigger a state update to refresh the product list
-      showSnackbar('Product added successfully');
+      showSnackbar('Added product successfully');
       setRefreshing(false);
 
       // Optionally, clear the form fields and update the UI accordingly
