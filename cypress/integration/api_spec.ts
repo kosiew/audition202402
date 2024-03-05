@@ -14,9 +14,11 @@ describe('Authenticated API access', () => {
       method: 'GET',
       url: '/api/inventory/1', // This should be an actual API endpoint you wish to test
       // Include cookies automatically included by Cypress in requests
-    }).then((response) => {
+    }).then((response: Cypress.Response<any>) => {
       expect(response.status).to.eq(200);
       // Further assertions about the response
+      // For example, if you expect the response to contain a product object with an id:
+      expect(response.body.product).to.have.property('id', 1);
     });
   });
 });
