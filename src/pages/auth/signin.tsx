@@ -9,6 +9,7 @@ export default function SignIn() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    // credentials, NOT Credentials
     const result = await signIn('credentials', {
       redirect: true,
       callbackUrl: '/inventory',
