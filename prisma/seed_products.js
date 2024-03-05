@@ -32,8 +32,8 @@ async function main() {
   }
   const suppliers = await prisma.supplier.findMany();
 
-  // Add 1000 Products, name is 0001 to 1000, the supplier should cycle through the suppliers
-  const productData = Array.from({ length: 1000 }, (_, i) => ({
+  // Add 1200 Products, name is 0001 to 1200, the supplier should cycle through the suppliers
+  const productData = Array.from({ length: 1200 }, (_, i) => ({
     name: `Product ${suppliers[i % suppliers.length].name.replace('Supplier', '')} ${String(i + 1).padStart(4, '0')}`,
     price: +(Math.random() * 100).toFixed(2),
     quantity: Math.floor(Math.random() * 1000) + 1,
