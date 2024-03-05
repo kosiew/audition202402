@@ -6,7 +6,8 @@ const { connect } = require('http2');
 const prisma = new PrismaClient();
 
 async function main() {
-  // prefix = MONTH - DAY - HH24
+  console.log('Start seeding...');
+  // prefix = MONTH - DAY - HH24 - MIN
   const date = new Date();
   const month = date.toLocaleString('default', { month: 'short' }).toUpperCase();
   const day = String(date.getDate()).padStart(2, '0');
@@ -17,6 +18,7 @@ async function main() {
   const prefixes = Array.from({ length: 26 }, (_, i) => prefix + String.fromCharCode(65 + i));
 
   // Create Suppliers, 1 for each prefix in prefixes
+  console.log('Creating new suppliers..');
   try {
     await prisma.supplier.createMany({
       data: prefixes.map((prefix) => ({ name: `Supplier ${prefix}` })),
@@ -38,6 +40,7 @@ async function main() {
     supplierId: suppliers[i % suppliers.length].id,
   }));
 
+  console.log('Creating new products..');
   try {
     await prisma.product.createMany({ data: productData });
   } catch (error) {

@@ -1,39 +1,38 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-## Getting Started
+## Getting Started locally
 
-First, run the development server:
+1. npm install
+2. npm prisma generate
+3. Populate the .env file with the values at https://quickforget.com/s/641f4973d79d7c2f650e14a82115fc55aab65878b6134322
+
+
+Run the development server:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
 bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Cloud Deployment
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+The app is deployed on Vercel at 'https://audition202402.vercel.app' and seeded with some users and products already.
 
-## Learn More
+The seeded users' permissions are available on https://github.com/kosiew/audition202402/issues/3
 
-To learn more about Next.js, take a look at the following resources:
+Their credentials are available on 
+https://quickforget.com/s/85e5ab465e230bc8fcac7cd08b79db6369a56429a4762ba4
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+You can sign in at https://audition202402.vercel.app/auth/signin with the credentials provided in the link above.
 
-## Deploy on Vercel
+## Useful scripts from package.json
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. `bun prisma:seed_products` - to seed the database with 1000 products
+2. `bun cypress:run` - to run the cypress tests in headless mode to just view the api test results. You can see a screenshot at https://github.com/kosiew/audition202402/issues/4
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
 
 ## API
 
