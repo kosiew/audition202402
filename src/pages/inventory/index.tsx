@@ -75,6 +75,12 @@ const InventoryPage = () => {
     filterSupplierName,
   ]); // Ensure effect runs when these values change
 
+  // switch to page 1 whenever filters change
+  useEffect(() => {
+    const debouncedSetPage = debounce(() => setPage(1), 500);
+    debouncedSetPage();
+  }, [filterProductName, filterSupplierName, filterPriceRange, inStock]);
+
   const canAddProduct = filteredPermissions.some((p) => p.action === addProductPermission.action);
   const canEditProduct = filteredPermissions.some((p) => p.action === editProductPermission.action);
   const canDeleteProduct = filteredPermissions.some(
@@ -92,10 +98,10 @@ const InventoryPage = () => {
           setLimit={setLimit}
           sortBy={sortBy}
           setSortBy={setSortBy}
-          inStock={inStock}
-          setInStock={setInStock}
           sortOrder={sortOrder}
           setSortOrder={setSortOrder}
+          inStock={inStock}
+          setInStock={setInStock}
           filterProductName={filterProductName}
           setFilterProductName={setFilterProductName}
           filterSupplierName={filterSupplierName}
