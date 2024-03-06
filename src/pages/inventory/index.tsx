@@ -10,7 +10,7 @@ import { SortBy } from '@/types/sortBy';
 import { SortOrder } from '@/types/sortOrder';
 import { Box, debounce } from '@mui/material';
 import { Permission } from '@prisma/client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 
 const addProductPermission = { action: 'create', subject: 'Product' };
 const editProductPermission = { action: 'update', subject: 'Product' };
@@ -32,6 +32,7 @@ const InventoryPage = () => {
   const [filterPriceRange, setFilterPriceRange] = useState<[number, number]>([0, Infinity]);
   const [filteredPermissions, setFilteredPermissions] = useState<Permission[]>([]);
   const { trigger, triggerUpdate } = useTriggerUpdate();
+  const [, startTransition] = useTransition();
 
   useEffect(() => {
     const maxPrice = isNaN(Number(filterPriceRange[1]))
@@ -54,10 +55,12 @@ const InventoryPage = () => {
       const response = await fetch(`/api/inventory?${queryParams}`);
       const { totalPages, products, filteredPermissions } = await response.json();
 
-      setProducts(products);
-      setTotalPages(totalPages);
-      setFilteredPermissions(filteredPermissions);
-      setRefreshing(false);
+      startTransition(() => {
+        setProducts(products);
+        setTotalPages(totalPages);
+        setFilteredPermissions(filteredPermissions);
+        setRefreshing(false);
+      });
     };
 
     // debounce the fetchProducts function to prevent rapid API calls
