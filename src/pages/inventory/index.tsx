@@ -64,7 +64,7 @@ const InventoryPage = () => {
     };
 
     // debounce the fetchProducts function to prevent rapid API calls
-    const debouncedFetchProducts = debounce(fetchProducts, 1000);
+    const debouncedFetchProducts = debounce(fetchProducts, 500);
     debouncedFetchProducts();
   }, [
     page,
