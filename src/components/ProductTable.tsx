@@ -2,6 +2,7 @@ import { useSnackbar } from '@/hooks/useSnackbar';
 import { Product } from '@/types/product';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import Visibility from '@mui/icons-material/Visibility';
 import {
   IconButton,
   Paper,
@@ -33,7 +34,9 @@ const ProductTable: React.FC<Props> = ({
   const router = useRouter();
   const { showSnackbar, SnackbarComponent } = useSnackbar();
 
-  const handleEdit = (productId: number) => {
+  const onlyViewProduct = !canDeleteProduct && !canEditProduct;
+
+  const handleViewOrEdit = (productId: number) => {
     router.push(`/inventory/${productId}`);
   };
 
@@ -72,7 +75,7 @@ const ProductTable: React.FC<Props> = ({
               <TableCell align="right">Price</TableCell>
               <TableCell align="right">Quantity</TableCell>
               <TableCell align="right">Supplier Name</TableCell>
-              {(canDeleteProduct || canEditProduct) && <TableCell align="right">Action</TableCell>}
+              <TableCell align="right">Action</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -91,8 +94,13 @@ const ProductTable: React.FC<Props> = ({
                 <TableCell align="right">{product.quantity}</TableCell>
                 <TableCell align="right">{product.supplier.name}</TableCell>
                 <TableCell align="right">
+                  {onlyViewProduct && (
+                    <IconButton onClick={() => handleViewOrEdit(product.id)}>
+                      <Visibility />
+                    </IconButton>
+                  )}
                   {canEditProduct && (
-                    <IconButton onClick={() => handleEdit(product.id)}>
+                    <IconButton onClick={() => handleViewOrEdit(product.id)}>
                       <EditIcon />
                     </IconButton>
                   )}
