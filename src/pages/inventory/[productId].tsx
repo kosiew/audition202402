@@ -212,6 +212,11 @@ const ProductPage = () => {
           </Button>
         )}
       </Box>
+      <Box pl={5}>
+        <Button color="primary" onClick={() => router.push('/inventory')}>
+          Back to Inventory
+        </Button>
+      </Box>
       <SnackbarComponent />
     </>
   );
