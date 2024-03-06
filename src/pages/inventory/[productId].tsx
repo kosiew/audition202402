@@ -59,8 +59,9 @@ const ProductPage = () => {
     // Append the image file to the form data if one exists
     if (imageFile) {
       formData.append('file', imageFile, imageFile.name);
+    } else if (product?.imageUrl) {
+      formData.append('imageUrl', product.imageUrl);
     }
-
     if (!product || !product.supplierName) return;
     try {
       const res = await fetch(`/api/update-inventory`, {
@@ -131,11 +132,13 @@ const ProductPage = () => {
                 label="Price"
                 value={product.price}
                 onChange={(e) => setProduct({ ...product, price: Number(e.target.value) })}
+                inputProps={{ step: '0.01', min: '0', type: 'number' }}
               />
               <TextField
                 label="Quantity"
                 value={product.quantity}
                 onChange={(e) => setProduct({ ...product, quantity: Number(e.target.value) })}
+                inputProps={{ min: '0', type: 'number' }}
               />
               <TextField
                 label="Supplier Name"
@@ -143,6 +146,17 @@ const ProductPage = () => {
                 onChange={(e) => setProduct({ ...product, supplierName: e.target.value })}
               />
               <ImageUpload imageFile={imageFile} setImageFile={setImageFile} />
+              {product.imageUrl && (
+                <Box mt={2}>
+                  <Typography variant="body1">Existing Image:</Typography>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={product.imageUrl}
+                    alt={product.name}
+                    style={{ width: '30%', height: 'auto' }}
+                  />
+                </Box>
+              )}
             </Box>
           ) : (
             <>
