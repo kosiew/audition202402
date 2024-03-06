@@ -9,9 +9,9 @@ import { useTriggerUpdate } from '@/hooks/useTriggerUpdate';
 import { Product } from '@/types/product';
 import { SortBy } from '@/types/sortBy';
 import { SortOrder } from '@/types/sortOrder';
-import { Box, debounce } from '@mui/material';
+import { Box } from '@mui/material';
 import { Permission } from '@prisma/client';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState, useTransition } from 'react';
 
 const addProductPermission = { action: 'create', subject: 'Product' };
 const editProductPermission = { action: 'update', subject: 'Product' };
@@ -37,39 +37,48 @@ const InventoryPage = () => {
   const prevFilterSupplierName = useRef(filterSupplierName);
   const prevFilterPriceRange = useRef(filterPriceRange);
   const prevInStock = useRef(inStock);
+  const [, startTransition] = useTransition();
   const maxPrice = isNaN(Number(filterPriceRange[1])) ? 'Infinity' : filterPriceRange[1].toString();
 
-  const fetchProducts = async () => {
-    const queryParams = new URLSearchParams({
-      page: page.toString(),
+  const fetchProducts = useCallback(
+    async (filtersChanged: boolean) => {
+      const queryParams = new URLSearchParams({
+        page: page.toString(),
+        limit,
+        sortBy,
+        sortOrder,
+        inStock: inStock.toString(),
+        productName: filterProductName,
+        supplierName: filterSupplierName,
+        minPrice: filterPriceRange[0].toString(),
+        maxPrice,
+      }).toString();
+
+      setRefreshing(true);
+      const response = await fetch(`/api/inventory?${queryParams}`);
+      const { totalPages, products, filteredPermissions } = await response.json();
+
+      startTransition(() => {
+        setProducts(products);
+        setTotalPages(totalPages);
+        setFilteredPermissions(filteredPermissions);
+        setRefreshing(false);
+        if (filtersChanged) {
+          setPage(1);
+        }
+      });
+    },
+    [
+      page,
       limit,
       sortBy,
       sortOrder,
-      inStock: inStock.toString(),
-      productName: filterProductName,
-      supplierName: filterSupplierName,
-      minPrice: filterPriceRange[0].toString(),
+      inStock,
+      filterProductName,
+      filterSupplierName,
+      filterPriceRange,
       maxPrice,
-    }).toString();
-
-    setRefreshing(true);
-    const response = await fetch(`/api/inventory?${queryParams}`);
-    const { totalPages, products, filteredPermissions } = await response.json();
-
-    setProducts(products);
-    setTotalPages(totalPages);
-    setFilteredPermissions(filteredPermissions);
-    setRefreshing(false);
-  };
-  // debounce the fetchProducts function to prevent rapid API calls
-  const debouncedFetchProducts = useCallback(
-    debounce((filtersChanged) => {
-      fetchProducts();
-      if (filtersChanged) {
-        setPage(1);
-      }
-    }, 1000),
-    [fetchProducts]
+    ]
   );
   useEffect(() => {
     const filtersChanged =
@@ -78,7 +87,7 @@ const InventoryPage = () => {
       prevFilterPriceRange.current !== filterPriceRange ||
       prevInStock.current !== inStock;
 
-    debouncedFetchProducts(filtersChanged);
+    fetchProducts(filtersChanged);
     prevFilterProductName.current = filterProductName;
     prevFilterSupplierName.current = filterSupplierName;
     prevFilterPriceRange.current = filterPriceRange;
@@ -93,6 +102,7 @@ const InventoryPage = () => {
     filterPriceRange,
     filterProductName,
     filterSupplierName,
+    fetchProducts,
   ]); // Ensure effect runs when these values change
 
   const canAddProduct = filteredPermissions.some((p) => p.action === addProductPermission.action);
