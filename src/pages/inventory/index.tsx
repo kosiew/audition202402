@@ -11,7 +11,7 @@ import { SortBy } from '@/types/sortBy';
 import { SortOrder } from '@/types/sortOrder';
 import { Box, debounce } from '@mui/material';
 import { Permission } from '@prisma/client';
-import { useEffect, useState, useTransition } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 const addProductPermission = { action: 'create', subject: 'Product' };
 const editProductPermission = { action: 'update', subject: 'Product' };
@@ -33,40 +33,56 @@ const InventoryPage = () => {
   const [filterPriceRange, setFilterPriceRange] = useState<[number, number]>([0, Infinity]);
   const [filteredPermissions, setFilteredPermissions] = useState<Permission[]>([]);
   const { trigger, triggerUpdate } = useTriggerUpdate();
-  const [, startTransition] = useTransition();
+  const prevFilterProductName = useRef(filterProductName);
+  const prevFilterSupplierName = useRef(filterSupplierName);
+  const prevFilterPriceRange = useRef(filterPriceRange);
+  const prevInStock = useRef(inStock);
+  const maxPrice = isNaN(Number(filterPriceRange[1])) ? 'Infinity' : filterPriceRange[1].toString();
 
+  const fetchProducts = async () => {
+    const queryParams = new URLSearchParams({
+      page: page.toString(),
+      limit,
+      sortBy,
+      sortOrder,
+      inStock: inStock.toString(),
+      productName: filterProductName,
+      supplierName: filterSupplierName,
+      minPrice: filterPriceRange[0].toString(),
+      maxPrice,
+    }).toString();
+
+    setRefreshing(true);
+    const response = await fetch(`/api/inventory?${queryParams}`);
+    const { totalPages, products, filteredPermissions } = await response.json();
+
+    setProducts(products);
+    setTotalPages(totalPages);
+    setFilteredPermissions(filteredPermissions);
+    setRefreshing(false);
+  };
+  // debounce the fetchProducts function to prevent rapid API calls
+  const debouncedFetchProducts = useCallback(
+    debounce((filtersChanged) => {
+      fetchProducts();
+      if (filtersChanged) {
+        setPage(1);
+      }
+    }, 1000),
+    [fetchProducts]
+  );
   useEffect(() => {
-    const maxPrice = isNaN(Number(filterPriceRange[1]))
-      ? 'Infinity'
-      : filterPriceRange[1].toString();
-    const fetchProducts = async () => {
-      const queryParams = new URLSearchParams({
-        page: page.toString(),
-        limit,
-        sortBy,
-        sortOrder,
-        inStock: inStock.toString(),
-        productName: filterProductName,
-        supplierName: filterSupplierName,
-        minPrice: filterPriceRange[0].toString(),
-        maxPrice,
-      }).toString();
+    const filtersChanged =
+      prevFilterProductName.current !== filterProductName ||
+      prevFilterSupplierName.current !== filterSupplierName ||
+      prevFilterPriceRange.current !== filterPriceRange ||
+      prevInStock.current !== inStock;
 
-      setRefreshing(true);
-      const response = await fetch(`/api/inventory?${queryParams}`);
-      const { totalPages, products, filteredPermissions } = await response.json();
-
-      startTransition(() => {
-        setProducts(products);
-        setTotalPages(totalPages);
-        setFilteredPermissions(filteredPermissions);
-        setRefreshing(false);
-      });
-    };
-
-    // debounce the fetchProducts function to prevent rapid API calls
-    const debouncedFetchProducts = debounce(fetchProducts, 500);
-    debouncedFetchProducts();
+    debouncedFetchProducts(filtersChanged);
+    prevFilterProductName.current = filterProductName;
+    prevFilterSupplierName.current = filterSupplierName;
+    prevFilterPriceRange.current = filterPriceRange;
+    prevInStock.current = inStock;
   }, [
     page,
     limit,
@@ -78,12 +94,6 @@ const InventoryPage = () => {
     filterProductName,
     filterSupplierName,
   ]); // Ensure effect runs when these values change
-
-  // switch to page 1 whenever filters change
-  useEffect(() => {
-    const debouncedSetPage = debounce(() => setPage(1), 500);
-    debouncedSetPage();
-  }, [filterProductName, filterSupplierName, filterPriceRange, inStock]);
 
   const canAddProduct = filteredPermissions.some((p) => p.action === addProductPermission.action);
   const canEditProduct = filteredPermissions.some((p) => p.action === editProductPermission.action);
