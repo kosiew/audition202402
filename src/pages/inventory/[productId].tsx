@@ -5,10 +5,13 @@ import { useSnackbar } from '@/hooks/useSnackbar';
 import { useTriggerUpdate } from '@/hooks/useTriggerUpdate';
 import { Product } from '@/types/product';
 import { Box, Button, CircularProgress, Grid, TextField, Typography } from '@mui/material';
+import { Permission } from '@prisma/client';
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 type ProductInput = Product & { supplierName?: string };
+const editProductPermission = { action: 'update', subject: 'Product' };
+const deleteProductPermission = { action: 'delete', subject: 'Product' };
 
 const ProductPage = () => {
   const session = useRequireAuth(); // This will redirect if not authenticated
@@ -22,14 +25,16 @@ const ProductPage = () => {
   const [editing, setEditing] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const { showSnackbar, SnackbarComponent } = useSnackbar();
+  const [filteredPermissions, setFilteredPermissions] = useState<Permission[]>([]);
 
   useEffect(() => {
     if (!productId) return;
 
     const fetchProduct = async () => {
       const res = await fetch(`/api/inventory/${productId}`);
-      const data = await res.json();
-      const updatedProduct = { ...data.product, supplierName: data.product.supplier.name };
+      const { product, filteredPermissions } = await res.json();
+      setFilteredPermissions(filteredPermissions);
+      const updatedProduct = { ...product, supplierName: product.supplier.name };
       setProduct(updatedProduct);
       setLoading(false);
     };
@@ -97,6 +102,11 @@ const ProductPage = () => {
       console.error('Failed to delete product:', error);
     }
   };
+
+  const canEditProduct = filteredPermissions.some((p) => p.action === editProductPermission.action);
+  const canDeleteProduct = filteredPermissions.some(
+    (p) => p.action === deleteProductPermission.action
+  );
 
   if (loading) {
     return <CircularProgress />;
@@ -176,13 +186,17 @@ const ProductPage = () => {
             Save
           </Button>
         ) : (
-          <Button color="primary" onClick={handleEdit}>
-            Edit
+          canEditProduct && (
+            <Button color="primary" onClick={handleEdit}>
+              Edit
+            </Button>
+          )
+        )}
+        {canDeleteProduct && (
+          <Button color="secondary" onClick={handleDelete}>
+            Delete
           </Button>
         )}
-        <Button color="secondary" onClick={handleDelete}>
-          Delete
-        </Button>
       </Box>
       <SnackbarComponent />
     </>
