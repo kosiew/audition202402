@@ -1,5 +1,18 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
+## Tech Stack
+### Frontend
+- React 
+- Next.js 
+- Material UI components 
+
+### Backend
+- Next.js 
+- Prisma, PostgreSQL for Database
+
+### Testing
+- Cypress 
+
 ## Getting Started locally
 
 1. `npm install`
@@ -26,7 +39,7 @@ https://quickforget.com/s/85e5ab465e230bc8fcac7cd08b79db6369a56429a4762ba4
 You can sign in at https://audition202402.vercel.app/auth/signin with the credentials provided in the link above.
 
 The free tier at Vercel comes with constrained resources.
-I added some UI to inform when the app is in a loading state. You can see at a screenshot at https://github.com/kosiew/audition202402/issues/6.
+I added some UI to inform when the app is in a loading state. You can see a screenshot at https://github.com/kosiew/audition202402/issues/6.
 
 ## Useful scripts from package.json
 
