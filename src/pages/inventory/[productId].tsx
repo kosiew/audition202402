@@ -1,10 +1,11 @@
 import Header from '@/components/Header';
 import ImageUpload from '@/components/ImageUpload';
+import Loading from '@/components/Loading';
 import { useRequireAuth } from '@/hooks/useRequireAuth';
 import { useSnackbar } from '@/hooks/useSnackbar';
 import { useTriggerUpdate } from '@/hooks/useTriggerUpdate';
 import { Product } from '@/types/product';
-import { Box, Button, CircularProgress, Grid, TextField, Typography } from '@mui/material';
+import { Box, Button, Grid, TextField, Typography } from '@mui/material';
 import { Permission } from '@prisma/client';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -110,7 +111,7 @@ const ProductPage = () => {
   );
 
   if (loading) {
-    return <CircularProgress />;
+    return <Loading />;
   }
 
   if (!product) {

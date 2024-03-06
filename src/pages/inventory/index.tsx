@@ -1,5 +1,6 @@
 import AddProductForm from '@/components/AddProductForm';
 import Header from '@/components/Header';
+import Loading from '@/components/Loading';
 import PaginationControl from '@/components/PaginationControl';
 import ProductTable from '@/components/ProductTable';
 import SortFilterControls from '@/components/SortFilterControls';
@@ -90,8 +91,9 @@ const InventoryPage = () => {
     (p) => p.action === deleteProductPermission.action
   );
 
-  if (!session) return <div>Loading...</div>; // Or a loading spinner
-
+  if (!session) {
+    return <Loading />;
+  }
   return (
     <Box p={5}>
       <Header session={session} refreshing={refreshing}></Header>
