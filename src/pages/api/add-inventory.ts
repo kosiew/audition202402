@@ -36,7 +36,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ message: 'Missing required fields' });
     }
 
-    const imageUrl = (await getImageUrl(files, res)) || '';
+    const imageUrl = (await getImageUrl('', files, res)) || '';
     try {
       const supplier = await getSupplier(supplierName);
       const product = await prisma.product.create({

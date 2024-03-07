@@ -2,8 +2,8 @@ import cloudinary from '@/utils/cloudinary';
 import { Files } from 'formidable';
 import { NextApiResponse } from 'next';
 
-export async function getImageUrl(files: Files, res: NextApiResponse) {
-  let imageUrl = '';
+export async function getImageUrl(requestImageUrl: string, files: Files, res: NextApiResponse) {
+  let imageUrl = requestImageUrl || '';
   if (files.file) {
     const file = Array.isArray(files.file) ? files.file[0] : files.file;
     if (file.filepath) {

@@ -36,6 +36,11 @@ const ProductPage = () => {
       const { product, filteredPermissions } = await res.json();
       setFilteredPermissions(filteredPermissions);
       const updatedProduct = { ...product, supplierName: product.supplier.name };
+      console.log(
+        `%c👀  ==> [fetchProduct] 👀`,
+        'background-color: #0595DE; color: yellow; padding: 8px; border-radius: 4px;',
+        { updatedProduct }
+      );
       setProduct(updatedProduct);
       setLoading(false);
     };
@@ -49,21 +54,21 @@ const ProductPage = () => {
   };
 
   const handleSave = async () => {
+    if (!product || !product.supplierName) return;
     setRefreshing(true);
     showSnackbar('Saving product...');
     const formData = new FormData();
     formData.append('id', productId as string);
-    formData.append('name', product?.name || '');
-    formData.append('price', product?.price.toString() || '');
-    formData.append('quantity', product?.quantity.toString() || '');
-    formData.append('supplierName', product?.supplierName || '');
+    formData.append('name', product.name || '');
+    formData.append('price', product.price.toString() || '');
+    formData.append('quantity', product.quantity.toString() || '');
+    formData.append('supplierName', product.supplierName || '');
     // Append the image file to the form data if one exists
     if (imageFile) {
       formData.append('file', imageFile, imageFile.name);
-    } else if (product?.imageUrl) {
+    } else {
       formData.append('imageUrl', product.imageUrl);
     }
-    if (!product || !product.supplierName) return;
     try {
       const res = await fetch(`/api/update-inventory`, {
         method: 'POST',
@@ -146,7 +151,11 @@ const ProductPage = () => {
                 value={product.supplierName}
                 onChange={(e) => setProduct({ ...product, supplierName: e.target.value })}
               />
-              <ImageUpload imageFile={imageFile} setImageFile={setImageFile} />
+              <ImageUpload
+                imageFile={imageFile}
+                setImageFile={setImageFile}
+                existingImageUrl={product?.imageUrl}
+              />{' '}
               {product.imageUrl && (
                 <Box mt={2}>
                   <Typography variant="body1">Existing Image:</Typography>

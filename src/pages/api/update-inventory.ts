@@ -34,11 +34,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const price = fields.price?.[0];
     const quantity = fields.quantity?.[0];
     const supplierName = fields.supplierName?.[0].trim();
+    const reqImageUrl = fields.imageUrl?.[0].trim() || '';
     // Ensure all fields are present
     if (!name || !price || !quantity || !supplierName) {
       return res.status(400).json({ message: 'Missing required fields' });
     }
-    const imageUrl = (await getImageUrl(files, res)) || '';
+    const imageUrl = (await getImageUrl(reqImageUrl, files, res)) || '';
 
     try {
       const supplier = await getSupplier(supplierName);
