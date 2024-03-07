@@ -1,6 +1,7 @@
 import Header from '@/components/Header';
 import ImageUpload from '@/components/ImageUpload';
 import Loading from '@/components/Loading';
+import ProductImage from '@/components/ProductImage';
 import { useRequireAuth } from '@/hooks/useRequireAuth';
 import { useSnackbar } from '@/hooks/useSnackbar';
 import { useTriggerUpdate } from '@/hooks/useTriggerUpdate';
@@ -151,20 +152,12 @@ const ProductPage = () => {
                 value={product.supplierName}
                 onChange={(e) => setProduct({ ...product, supplierName: e.target.value })}
               />
-              <ImageUpload
-                imageFile={imageFile}
-                setImageFile={setImageFile}
-                existingImageUrl={product?.imageUrl}
-              />{' '}
+              <ImageUpload imageFile={imageFile} setImageFile={setImageFile} />{' '}
               {product.imageUrl && (
                 <Box mt={2}>
                   <Typography variant="body1">Existing Image:</Typography>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={product.imageUrl}
-                    alt={product.name}
-                    style={{ width: '30%', height: 'auto' }}
-                  />
+                  <ProductImage product={product} />
                 </Box>
               )}
             </Box>
@@ -192,11 +185,7 @@ const ProductPage = () => {
                     <Box>
                       <Typography variant="h6">Image</Typography>
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={product.imageUrl}
-                        alt={product.name}
-                        style={{ width: '30%', height: 'auto' }}
-                      />
+                      <ProductImage product={product} />
                     </Box>
                   </Grid>
                 </Grid>
