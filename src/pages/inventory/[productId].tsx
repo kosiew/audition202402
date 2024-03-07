@@ -37,11 +37,6 @@ const ProductPage = () => {
       const { product, filteredPermissions } = await res.json();
       setFilteredPermissions(filteredPermissions);
       const updatedProduct = { ...product, supplierName: product.supplier.name };
-      console.log(
-        `%c👀  ==> [fetchProduct] 👀`,
-        'background-color: #0595DE; color: yellow; padding: 8px; border-radius: 4px;',
-        { updatedProduct }
-      );
       setProduct(updatedProduct);
       setLoading(false);
     };
