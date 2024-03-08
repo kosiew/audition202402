@@ -97,11 +97,10 @@ const InventoryPage = () => {
     [page, limit, sortBy, sortOrder, filterState, maxPrice]
   );
   useEffect(() => {
-    const filtersChanged =
-      previousFilterState.current.productName !== filterState.productName ||
-      previousFilterState.current.supplierName !== filterState.supplierName ||
-      previousFilterState.current.priceRange !== filterState.priceRange ||
-      previousFilterState.current.inStock !== filterState.inStock;
+    const filtersChanged = Object.entries(filterState).some(
+      ([key, value]) =>
+        previousFilterState.current[key as keyof typeof previousFilterState.current] !== value
+    );
     const fetchData = async () => {
       setRefreshing(true);
       await fetchProducts(filtersChanged);
