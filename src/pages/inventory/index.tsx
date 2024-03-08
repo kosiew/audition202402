@@ -11,15 +11,48 @@ import { SortBy } from '@/types/sortBy';
 import { SortOrder } from '@/types/sortOrder';
 import { Box } from '@mui/material';
 import { Permission } from '@prisma/client';
-import { useCallback, useEffect, useRef, useState, useTransition } from 'react';
+import { useCallback, useEffect, useReducer, useRef, useState, useTransition } from 'react';
 
 const addProductPermission = { action: 'create', subject: 'Product' };
 const editProductPermission = { action: 'update', subject: 'Product' };
 const deleteProductPermission = { action: 'delete', subject: 'Product' };
+const initialFilterState = {
+  productName: '',
+  supplierName: '',
+  priceRange: [0, Infinity],
+  inStock: true,
+};
+
+export type FilterState = typeof initialFilterState;
+
+export type FilterAction =
+  | { type: 'SET_PRODUCT_NAME'; payload: string }
+  | { type: 'SET_SUPPLIER_NAME'; payload: string }
+  | { type: 'SET_PRICE_RANGE'; payload: [number, number] }
+  | { type: 'SET_IN_STOCK'; payload: boolean }
+  | { type: 'CLEAR_ALL_FILTERS' };
 
 const InventoryPage = () => {
   const session = useRequireAuth(); // This will redirect if not authenticated
 
+  function filterReducer(state: FilterState, action: FilterAction): FilterState {
+    switch (action.type) {
+      case 'SET_PRODUCT_NAME':
+        return { ...state, productName: action.payload };
+      case 'SET_SUPPLIER_NAME':
+        return { ...state, supplierName: action.payload };
+      case 'SET_PRICE_RANGE':
+        return { ...state, priceRange: action.payload };
+      case 'SET_IN_STOCK':
+        return { ...state, inStock: action.payload };
+      case 'CLEAR_ALL_FILTERS':
+        return initialFilterState;
+      default:
+        throw new Error();
+    }
+  }
+
+  const [filterState, dispatch] = useReducer(filterReducer, initialFilterState);
   const [products, setProducts] = useState<Product[]>([]);
   const [page, setPage] = useState(1);
   const [refreshing, setRefreshing] = useState(true);
@@ -27,18 +60,13 @@ const InventoryPage = () => {
   const [limit, setLimit] = useState('5');
   const [sortBy, setSortBy] = useState<SortBy>('name');
   const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
-  const [inStock, setInStock] = useState(true);
-  const [filterProductName, setFilterProductName] = useState('');
-  const [filterSupplierName, setFilterSupplierName] = useState('');
-  const [filterPriceRange, setFilterPriceRange] = useState<[number, number]>([0, Infinity]);
   const [filteredPermissions, setFilteredPermissions] = useState<Permission[]>([]);
   const { trigger, triggerUpdate } = useTriggerUpdate();
-  const prevFilterProductName = useRef(filterProductName);
-  const prevFilterSupplierName = useRef(filterSupplierName);
-  const prevFilterPriceRange = useRef(filterPriceRange);
-  const prevInStock = useRef(inStock);
+  const previousFilterState = useRef(filterState);
   const [, startTransition] = useTransition();
-  const maxPrice = isNaN(Number(filterPriceRange[1])) ? 'Infinity' : filterPriceRange[1].toString();
+  const maxPrice = isNaN(Number(filterState.priceRange[1]))
+    ? 'Infinity'
+    : filterState.priceRange[1].toString();
 
   const fetchProducts = useCallback(
     async (filtersChanged: boolean) => {
@@ -47,10 +75,10 @@ const InventoryPage = () => {
         limit,
         sortBy,
         sortOrder,
-        inStock: inStock.toString(),
-        productName: filterProductName,
-        supplierName: filterSupplierName,
-        minPrice: filterPriceRange[0].toString(),
+        inStock: filterState.inStock.toString(),
+        productName: filterState.productName,
+        supplierName: filterState.supplierName,
+        minPrice: filterState.priceRange[0].toString(),
         maxPrice,
       }).toString();
 
@@ -66,24 +94,14 @@ const InventoryPage = () => {
         }
       });
     },
-    [
-      page,
-      limit,
-      sortBy,
-      sortOrder,
-      inStock,
-      filterProductName,
-      filterSupplierName,
-      filterPriceRange,
-      maxPrice,
-    ]
+    [page, limit, sortBy, sortOrder, filterState, maxPrice]
   );
   useEffect(() => {
     const filtersChanged =
-      prevFilterProductName.current !== filterProductName ||
-      prevFilterSupplierName.current !== filterSupplierName ||
-      prevFilterPriceRange.current !== filterPriceRange ||
-      prevInStock.current !== inStock;
+      previousFilterState.current.productName !== filterState.productName ||
+      previousFilterState.current.supplierName !== filterState.supplierName ||
+      previousFilterState.current.priceRange !== filterState.priceRange ||
+      previousFilterState.current.inStock !== filterState.inStock;
     const fetchData = async () => {
       setRefreshing(true);
       await fetchProducts(filtersChanged);
@@ -91,22 +109,8 @@ const InventoryPage = () => {
     };
 
     fetchData();
-    prevFilterProductName.current = filterProductName;
-    prevFilterSupplierName.current = filterSupplierName;
-    prevFilterPriceRange.current = filterPriceRange;
-    prevInStock.current = inStock;
-  }, [
-    page,
-    limit,
-    sortBy,
-    sortOrder,
-    inStock,
-    trigger,
-    filterPriceRange,
-    filterProductName,
-    filterSupplierName,
-    fetchProducts,
-  ]); // Ensure effect runs when these values change
+    previousFilterState.current = filterState;
+  }, [page, limit, sortBy, sortOrder, trigger, filterState, fetchProducts]); // Ensure effect runs when these values change
 
   const canAddProduct = filteredPermissions.some((p) => p.action === addProductPermission.action);
   const canEditProduct = filteredPermissions.some((p) => p.action === editProductPermission.action);
@@ -128,14 +132,8 @@ const InventoryPage = () => {
           setSortBy={setSortBy}
           sortOrder={sortOrder}
           setSortOrder={setSortOrder}
-          inStock={inStock}
-          setInStock={setInStock}
-          filterProductName={filterProductName}
-          setFilterProductName={setFilterProductName}
-          filterSupplierName={filterSupplierName}
-          setFilterSupplierName={setFilterSupplierName}
-          filterPriceRange={filterPriceRange}
-          setFilterPriceRange={setFilterPriceRange}
+          filterState={filterState}
+          dispatch={dispatch}
         />
       </Box>
       <ProductTable

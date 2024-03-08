@@ -1,3 +1,4 @@
+import { FilterAction, FilterState } from '@/pages/inventory';
 import { SortBy } from '@/types/sortBy';
 import { SortOrder } from '@/types/sortOrder';
 import {
@@ -18,16 +19,10 @@ type Props = {
   setLimit: React.Dispatch<React.SetStateAction<string>>;
   sortBy: SortBy;
   setSortBy: React.Dispatch<React.SetStateAction<SortBy>>;
-  inStock: boolean;
-  setInStock: React.Dispatch<React.SetStateAction<boolean>>;
   sortOrder: SortOrder;
   setSortOrder: React.Dispatch<React.SetStateAction<SortOrder>>;
-  filterProductName: string;
-  setFilterProductName: React.Dispatch<React.SetStateAction<string>>;
-  filterSupplierName: string;
-  setFilterSupplierName: React.Dispatch<React.SetStateAction<string>>;
-  filterPriceRange: [number, number];
-  setFilterPriceRange: React.Dispatch<React.SetStateAction<[number, number]>>;
+  filterState: FilterState;
+  dispatch: React.Dispatch<FilterAction>;
 };
 
 const SortFilterControls: React.FC<Props> = ({
@@ -35,22 +30,18 @@ const SortFilterControls: React.FC<Props> = ({
   setLimit,
   sortBy,
   setSortBy,
-  inStock,
-  setInStock,
   sortOrder,
   setSortOrder,
-  filterProductName,
-  setFilterProductName,
-  filterSupplierName,
-  setFilterSupplierName,
-  filterPriceRange,
-  setFilterPriceRange,
+  filterState: {
+    productName: filterProductName,
+    supplierName: filterSupplierName,
+    priceRange: filterPriceRange,
+    inStock,
+  },
+  dispatch,
 }) => {
   const clearFilters = () => {
-    setFilterProductName('');
-    setFilterSupplierName('');
-    setFilterPriceRange([0, Infinity]);
-    setInStock(true);
+    dispatch({ type: 'CLEAR_ALL_FILTERS' });
   };
 
   return (
@@ -100,18 +91,23 @@ const SortFilterControls: React.FC<Props> = ({
         <TextField
           label="Product Name"
           value={filterProductName}
-          onChange={(e) => setFilterProductName(e.target.value)}
+          onChange={(e) => dispatch({ type: 'SET_PRODUCT_NAME', payload: e.target.value })}
         />
         <TextField
           label="Supplier Name"
           value={filterSupplierName}
-          onChange={(e) => setFilterSupplierName(e.target.value)}
+          onChange={(e) => dispatch({ type: 'SET_SUPPLIER_NAME', payload: e.target.value })}
         />
         <TextField
           label="Minimum Price"
           type="number"
           value={filterPriceRange[0]}
-          onChange={(e) => setFilterPriceRange([Number(e.target.value), filterPriceRange[1]])}
+          onChange={(e) =>
+            dispatch({
+              type: 'SET_PRICE_RANGE',
+              payload: [Number(e.target.value), filterPriceRange[1]],
+            })
+          }
         />
         <TextField
           label="Maximum Price"
@@ -126,13 +122,18 @@ const SortFilterControls: React.FC<Props> = ({
             } else {
               value = Number(e.target.value);
             }
-            setFilterPriceRange([filterPriceRange[0], value]);
+            dispatch({ type: 'SET_PRICE_RANGE', payload: [filterPriceRange[0], value] });
           }}
         />
 
         <FormControlLabel
           sx={{ pl: '10px' }}
-          control={<Checkbox checked={inStock} onChange={(e) => setInStock(e.target.checked)} />}
+          control={
+            <Checkbox
+              checked={inStock}
+              onChange={(e) => dispatch({ type: 'SET_IN_STOCK', payload: e.target.checked })}
+            />
+          }
           label="In Stock Only"
         />
         <Button variant="outlined" color="primary" onClick={clearFilters} sx={{ m: 1 }}>
