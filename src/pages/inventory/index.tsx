@@ -54,7 +54,6 @@ const InventoryPage = () => {
         maxPrice,
       }).toString();
 
-      setRefreshing(true);
       const response = await fetch(`/api/inventory?${queryParams}`);
       const { totalPages, products, filteredPermissions } = await response.json();
 
@@ -62,7 +61,6 @@ const InventoryPage = () => {
         setProducts(products);
         setTotalPages(totalPages);
         setFilteredPermissions(filteredPermissions);
-        setRefreshing(false);
         if (filtersChanged) {
           setPage(1);
         }
@@ -86,8 +84,13 @@ const InventoryPage = () => {
       prevFilterSupplierName.current !== filterSupplierName ||
       prevFilterPriceRange.current !== filterPriceRange ||
       prevInStock.current !== inStock;
+    const fetchData = async () => {
+      setRefreshing(true);
+      await fetchProducts(filtersChanged);
+      setRefreshing(false);
+    };
 
-    fetchProducts(filtersChanged);
+    fetchData();
     prevFilterProductName.current = filterProductName;
     prevFilterSupplierName.current = filterSupplierName;
     prevFilterPriceRange.current = filterPriceRange;
